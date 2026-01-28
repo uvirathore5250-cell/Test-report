@@ -3,147 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Fitness Report Generator</title>
+    <title>AI Fitness Report Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print { .no-print { display: none; } }
-        .input-card { border: 1px solid #ddd; padding: 20px; border-radius: 12px; background: white; margin-bottom: 20px; }
-        .black-label { background: black; color: white; padding: 4px 10px; font-weight: bold; font-size: 14px; display: inline-block; margin-bottom: 10px; }
+        .black-box { background: black; color: white; padding: 5px 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
     </style>
 </head>
-<body class="bg-gray-50 p-6">
+<body class="bg-gray-100 p-4">
 
-    <div class="max-w-4xl mx-auto no-print">
-        <h1 class="text-4xl font-black text-center mb-8 uppercase italic tracking-tighter">Fitness Test Report Portal</h1>
+    <div class="max-w-6xl mx-auto no-print">
+        <h1 class="text-3xl font-black text-center mb-6 uppercase tracking-widest italic underline">Fitness Test Report Portal</h1>
 
-        <div class="input-card shadow-sm">
-            <div class="black-label">CLIENT INFORMATION</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="client_name" placeholder="Enter Client Name..." class="w-full p-3 border-2 rounded-lg font-bold focus:border-blue-500 outline-none">
-                <input type="number" id="client_age" placeholder="Enter Age..." class="w-full p-3 border-2 rounded-lg font-bold">
-            </div>
-        </div>
-
-        <div class="input-card shadow-sm">
-            <div class="black-label">BMI & BODY COMPOSITION (FROM REPORT)</div>
-            <p class="text-xs text-gray-500 mb-4 font-semibold italic">*Enter values from the BMI machine slip</p>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <input type="text" id="w" placeholder="Weight (kg)" class="p-2 border rounded">
-                <input type="text" id="bmi" placeholder="BMI" class="p-2 border rounded">
-                <input type="text" id="fat" placeholder="Fat %" class="p-2 border rounded">
-                <input type="text" id="muscle" placeholder="Muscle %" class="p-2 border rounded">
-                <input type="text" id="water" placeholder="Water %" class="p-2 border rounded">
-                <input type="text" id="protein" placeholder="Protein %" class="p-2 border rounded">
-                <input type="text" id="met_age" placeholder="Metabolic Age" class="p-2 border rounded">
-                <input type="text" id="vis_fat" placeholder="Visceral Fat" class="p-2 border rounded">
-            </div>
-        </div>
-
-        <div class="input-card shadow-sm">
-            <div class="black-label">GYM PERFORMANCE TESTS</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-                <div>
-                    <label class="text-sm font-bold block mb-1 uppercase">Bicep Curls (30 Sec)</label>
-                    <input type="text" id="test_bicep" placeholder="Enter Reps..." class="w-full p-2 border rounded">
-                </div>
-                <div>
-                    <label class="text-sm font-bold block mb-1 uppercase">Plank Hold</label>
-                    <input type="text" id="test_plank" placeholder="Enter Seconds..." class="w-full p-2 border rounded">
-                </div>
-                <div>
-                    <label class="text-sm font-bold block mb-1 uppercase">Cardio (Min/Km/HR)</label>
-                    <input type="text" id="test_cardio" placeholder="e.g., 15m / 1km / 120bpm" class="w-full p-2 border rounded">
-                </div>
-                <div>
-                    <label class="text-sm font-bold block mb-1 uppercase">Medical History</label>
-                    <input type="text" id="test_med" placeholder="e.g., Hypertension / No" class="w-full p-2 border rounded">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-dashed border-gray-300">
+                <div class="black-box">Step 1: Upload BMI Slip</div>
+                <input type="file" accept="image/*" id="bmi_pic" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800 mb-4" onchange="previewImage(event)">
+                <div id="preview_container" class="w-full h-[500px] bg-gray-50 rounded-lg flex items-center justify-center overflow-hidden border">
+                    <p class="text-gray-400 italic" id="placeholder_text">BMI Slip Photo will appear here...</p>
+                    <img id="output_image" class="hidden w-full h-full object-contain">
                 </div>
             </div>
-        </div>
 
-        <button onclick="generateReport()" class="w-full bg-black text-white font-black py-5 rounded-xl text-xl hover:bg-gray-800 transition shadow-xl">GENERATE ANALYSIS & REPORT</button>
+            <div class="bg-white p-6 rounded-2xl shadow-lg border-t-8 border-black">
+                <div class="black-box">Step 2: Enter Details</div>
+                
+                <div class="space-y-4">
+                    <input type="text" id="c_name" placeholder="Client Full Name" class="w-full p-3 border-2 rounded font-bold">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="v_w" placeholder="Weight (from slip)" class="p-2 border rounded">
+                        <input type="text" id="v_bmi" placeholder="BMI (from slip)" class="p-2 border rounded">
+                        <input type="text" id="v_fat" placeholder="Fat % (from slip)" class="p-2 border rounded">
+                        <input type="text" id="v_mus" placeholder="Muscle % (from slip)" class="p-2 border rounded">
+                        <input type="text" id="v_wat" placeholder="Water % (from slip)" class="p-2 border rounded">
+                        <input type="text" id="v_bage" placeholder="Metabolic Age" class="p-2 border rounded">
+                    </div>
+
+                    <div class="border-t pt-4">
+                        <div class="black-box">Step 3: Gym Tests</div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="t_bicep" placeholder="Bicep Curls (30s)" class="p-2 border rounded">
+                            <input type="text" id="t_plank" placeholder="Plank (Sec)" class="p-2 border rounded">
+                            <input type="text" id="t_cardio" placeholder="Cardio (Time/KM)" class="p-2 border rounded">
+                            <input type="text" id="t_med" placeholder="Medical Condition" class="p-2 border rounded">
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="generateAIReport()" class="w-full mt-6 bg-black text-white py-4 rounded font-black text-xl hover:bg-gray-800 transition shadow-xl uppercase">Generate Analysis Report</button>
+            </div>
+        </div>
     </div>
 
-    <div id="finalReport" class="max-w-4xl mx-auto bg-white p-10 mt-10 shadow-2xl hidden border-t-[16px] border-black">
-        <div class="flex justify-between items-center border-b-2 border-gray-100 pb-6 mb-6">
-            <h1 class="text-4xl font-black uppercase italic italic">Fitness Test Report</h1>
-            <div class="text-right">
-                <p class="text-2xl font-black" id="out_name"></p>
-                <p class="text-gray-500 font-bold">Age: <span id="out_age"></span></p>
+    <div id="finalReport" class="max-w-4xl mx-auto bg-white p-12 mt-10 shadow-2xl hidden border-x-[20px] border-black">
+        <h1 class="text-4xl font-black italic border-b-4 border-black pb-2 mb-6 uppercase">Fitness Assessment Report</h1>
+        <p class="text-2xl font-black mb-1" id="out_name"></p>
+        
+        <div class="grid grid-cols-2 gap-8 my-8 border-y py-6">
+            <div id="out_stats" class="space-y-1 font-bold uppercase text-sm"></div>
+            <div class="bg-blue-50 p-4 border-l-4 border-blue-600">
+                <h4 class="font-black text-xs text-blue-800 mb-2 uppercase">AI Performance Analysis</h4>
+                <div id="out_analysis" class="text-xs space-y-2 leading-tight font-semibold italic"></div>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-10 mb-10">
-            <div>
-                <h3 class="bg-gray-100 p-1 font-black text-sm mb-3">BODY COMPOSITION DATA</h3>
-                <div class="space-y-1 text-sm font-semibold uppercase" id="out_body_stats"></div>
-            </div>
-            <div class="bg-red-50 p-4 border border-red-200">
-                <h3 class="text-red-700 font-black text-xs mb-2">MEDICAL ADVISORY</h3>
-                <p class="text-sm font-bold" id="out_med"></p>
-            </div>
-        </div>
-
-        <h3 class="bg-black text-white p-1 font-black text-sm mb-4 px-3">PERFORMANCE LOG</h3>
-        <div class="grid grid-cols-2 gap-4 text-sm font-bold uppercase mb-10" id="out_perf"></div>
-
-        <div class="bg-blue-50 p-6 border-l-4 border-blue-600 rounded">
-            <h3 class="font-black text-blue-800 text-lg mb-3">AI ANALYSIS & RECOMMENDATIONS</h3>
-            <div id="ai_analysis" class="text-sm space-y-3 font-medium text-gray-700"></div>
-        </div>
-
-        <button onclick="window.print()" class="no-print mt-10 bg-blue-600 text-white px-8 py-3 rounded-lg font-bold">Download / Print PDF</button>
+        <button onclick="window.print()" class="no-print bg-blue-600 text-white px-10 py-3 rounded-full font-black text-xs uppercase shadow-lg">Download PDF</button>
     </div>
 
     <script>
-        function generateReport() {
-            // Mapping basic info
-            const name = document.getElementById('client_name').value;
-            const age = document.getElementById('client_age').value;
-            if(!name) { alert("Please enter client name!"); return; }
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('output_image');
+                output.src = reader.result;
+                output.classList.remove('hidden');
+                document.getElementById('placeholder_text').classList.add('hidden');
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function generateAIReport() {
+            const name = document.getElementById('c_name').value;
+            const muscle = parseFloat(document.getElementById('v_mus').value) || 0;
+            const water = parseFloat(document.getElementById('v_wat').value) || 0;
+            const med = document.getElementById('t_med').value.toLowerCase();
 
             document.getElementById('out_name').innerText = name;
-            document.getElementById('out_age').innerText = age;
-            document.getElementById('out_med').innerText = "Condition: " + document.getElementById('test_med').value;
 
-            // Body Stats Logic
-            const stats = [
-                {l: "Weight", v: document.getElementById('w').value + " kg"},
-                {l: "BMI", v: document.getElementById('bmi').value},
-                {l: "Body Fat", v: document.getElementById('fat').value + "%"},
-                {l: "Muscle", v: document.getElementById('muscle').value + "%"},
-                {l: "Water", v: document.getElementById('water').value + "%"},
-                {l: "Metabolic Age", v: document.getElementById('met_age').value}
-            ];
-            document.getElementById('out_body_stats').innerHTML = stats.map(s => `<div class="flex justify-between border-b pb-1"><span>${s.l}:</span><span>${s.v}</span></div>`).join('');
+            // Stats Layout
+            document.getElementById('out_stats').innerHTML = `
+                <p>Weight: ${document.getElementById('v_w').value} kg</p>
+                <p>BMI: ${document.getElementById('v_bmi').value}</p>
+                <p>Muscle: ${muscle}%</p>
+                <p>Water: ${water}%</p>
+                <p>Metabolic Age: ${document.getElementById('v_bage').value}</p>
+            `;
 
-            // Performance Logic
-            const perf = [
-                {l: "Cardio", v: document.getElementById('test_cardio').value},
-                {l: "Bicep Curls", v: document.getElementById('test_bicep').value},
-                {l: "Plank Hold", v: document.getElementById('test_plank').value + " Sec"}
-            ];
-            document.getElementById('out_perf').innerHTML = perf.map(p => `<div class="p-2 border"><span>${p.l}:</span> <span class="float-right text-blue-600">${p.v}</span></div>`).join('');
-
-            [span_0](start_span)[span_1](start_span)// AI Logic Based on Nandini Mam's Format[span_0](end_span)[span_1](end_span)
+            // Logic Analysis (Nandini Mam Style)
             let analysis = "";
-            const muscleVal = parseFloat(document.getElementById('muscle').value);
-            const waterVal = parseFloat(document.getElementById('water').value);
-            const med = document.getElementById('test_med').value.toLowerCase();
+            analysis += `<p>✅ Muscle Foundation: ${muscle > 30 ? [span_0](start_span)'Excellent base for age[span_0](end_span).' : 'Under development.'}</p>`;
+            if(water < 50) analysis += `<p>⚠️ Hydration Alert: Water is ${water}%. [span_1](start_span)Needs improvement (Target >50%)[span_1](end_span).</p>`;
+            if(med.includes("bp") || med.includes("hyper")) analysis += `<p>🛑 Safety: Hypertension detected. [span_2](start_span)Avoid high-intensity; monitor BP[span_2](end_span).</p>`;
+            [span_3](start_span)analysis += `<p>🍎 Recommendation: Increase protein intake to support metabolism[span_3](end_span).</p>`;
 
-            analysis += `<p>✅ <strong>Muscle Health:</strong> Muscle foundation is ${muscleVal > 30 ? 'excellent' : 'developing'}. [span_2](start_span)[span_3](start_span)Strong base for strength training[span_2](end_span)[span_3](end_span).</p>`;
-            
-            if(waterVal < 50) {
-                analysis += `<p>⚠️ <strong>Hydration:</strong> Water percentage (${waterVal}%) is low. [span_4](start_span)Increase water intake to above 50%[span_4](end_span).</p>`;
-            }
-
-            if(med.includes("bp") || med.includes("hyper")) {
-                analysis += `<p>🛑 <strong>Precaution:</strong> High BP detected. [span_5](start_span)Avoid high-intensity bursts; focus on moderate cardio[span_5](end_span).</p>`;
-            }
-
-            [span_6](start_span)analysis += `<p>🍎 <strong>Diet:</strong> Protein intake should be monitored to maintain muscle and improve metabolism[span_6](end_span).</p>`;
-
-            document.getElementById('ai_analysis').innerHTML = analysis;
+            document.getElementById('out_analysis').innerHTML = analysis;
             document.getElementById('finalReport').classList.remove('hidden');
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
