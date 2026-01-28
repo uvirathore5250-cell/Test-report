@@ -3,135 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanita Full Analysis Report</title>
+    <title>Comprehensive Fitness Report Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @media print { .no-print { display: none; } .print-area { display: block !important; } }
-        .input-box { border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; font-weight: 700; width: 100%; transition: 0.2s; font-size: 0.95rem; }
-        .input-box:focus { border-color: #2563eb; outline: none; background: #f8fafc; }
-        .label-style { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 3px; display: block; }
-        .section-head { font-size: 11px; font-weight: 900; color: #2563eb; text-transform: uppercase; border-bottom: 2px solid #dbeafe; padding-bottom: 4px; margin-bottom: 10px; margin-top: 15px; }
+        @media print { .no-print { display: none; } .print-area { display: block !important; width: 100%; } }
+        .input-box { border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; font-weight: 600; width: 100%; font-size: 0.9rem; }
+        .label-style { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 2px; display: block; }
+        .section-title { font-size: 14px; font-weight: 900; color: #1e40af; border-left: 4px solid #1e40af; padding-left: 8px; margin: 20px 0 10px 0; background: #eff6ff; }
     </style>
 </head>
-<body class="bg-slate-50 p-4 md:p-8">
+<body class="bg-gray-100 p-4 font-sans">
 
-    <div class="max-w-5xl mx-auto no-print">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden">
-            <div class="bg-slate-900 p-6 text-center">
-                <h1 class="text-white text-3xl font-black italic uppercase italic tracking-tighter">Tanita <span class="text-blue-500">Pro Report</span> Portal</h1>
-            </div>
-
-            <div class="p-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <div class="space-y-4">
-                        <h3 class="section-head">1. Client Profile</h3>
-                        <div><label class="label-style">Full Name</label><input type="text" id="name" class="input-box bg-yellow-50" placeholder="Enter Name"></div>
-                        <div><label class="label-style">Gender</label>
-                            <select id="gen" class="input-box"><option>Male</option><option>Female</option></select>
-                        </div>
-                        <div><label class="label-style">Age (Yrs)</label><input type="number" id="age" class="input-box" value="25"></div>
-                        <div><label class="label-style">Height (cm)</label><input type="number" id="ht" class="input-box" value="176"></div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <h3 class="section-head">2. Composition Data</h3>
-                        <div><label class="label-style">Weight (kg)</label><input type="number" step="0.1" id="w" class="input-box border-blue-200" value="58.5"></div>
-                        <div><label class="label-style">Fat %</label><input type="number" step="0.1" id="fatp" class="input-box" value="18.9"></div>
-                        <div><label class="label-style">Fat Mass (kg)</label><input type="number" step="0.1" id="fatm" class="input-box" value="11.1"></div>
-                        <div><label class="label-style">FFM (Fat Free Mass)</label><input type="number" step="0.1" id="ffm" class="input-box" value="47.4"></div>
-                        <div><label class="label-style">Muscle Mass (kg)</label><input type="number" step="0.1" id="mus" class="input-box border-green-200" value="44.9"></div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <h3 class="section-head">3. Advanced Metrics</h3>
-                        <div><label class="label-style">BMI Value</label><input type="number" step="0.1" id="bmi" class="input-box" value="18.9"></div>
-                        <div><label class="label-style">BMR (kcal)</label><input type="number" id="bmr" class="input-box bg-blue-50" value="1347"></div>
-                        <div><label class="label-style">Bone Mass (kg)</label><input type="number" step="0.1" id="bone" class="input-box" value="2.5"></div>
-                        <div><label class="label-style">Visceral Fat Rating</label><input type="number" id="visc" class="input-box" value="4"></div>
-                        <div><label class="label-style">Metabolic Age</label><input type="number" id="mage" class="input-box" value="24"></div>
-                    </div>
+    <div class="max-w-5xl mx-auto no-print bg-white shadow-2xl rounded-2xl overflow-hidden mb-10">
+        <div class="bg-blue-800 p-6 text-center"><h1 class="text-white text-2xl font-black uppercase tracking-widest">Professional Fitness Portal</h1></div>
+        
+        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="space-y-3">
+                <h3 class="section-title">1. Personal Details</h3>
+                <div><label class="label-style">Client Name</label><input type="text" id="name" class="input-box" value="Nandini Mam"></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="label-style">Age</label><input type="number" id="age" class="input-box" value="58"></div>
+                    <div><label class="label-style">Gender</label><select id="gender" class="input-box"><option>Female</option><option>Male</option></select></div>
                 </div>
-
-                <button onclick="makeReport()" class="w-full mt-10 bg-blue-600 text-white py-6 rounded-2xl font-black text-2xl uppercase italic shadow-xl hover:bg-blue-700 transition-all">
-                    Generate Full Analysis Report
-                </button>
+                <div><label class="label-style">Height (cm)</label><input type="number" id="ht" class="input-box" value="154"></div>
+                <div><label class="label-style">Medical Condition</label><input type="text" id="med" class="input-box" value="Hypertension (High BP)"></div>
             </div>
+
+            <div class="space-y-3">
+                <h3 class="section-title">2. Composition (Slip Data)</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="label-style">Weight (kg)</label><input type="number" step="0.1" id="w" class="input-box" value="60.9"></div>
+                    <div><label class="label-style">BMI</label><input type="number" step="0.1" id="bmi" class="input-box" value="25.7"></div>
+                    <div><label class="label-style">Fat %</label><input type="number" step="0.1" id="fatp" class="input-box" value="37.1"></div>
+                    <div><label class="label-style">Fat Mass (kg)</label><input type="number" step="0.1" id="fatm" class="input-box" value="22.6"></div>
+                    <div><label class="label-style">Muscle Mass (kg)</label><input type="number" step="0.1" id="mus" class="input-box" value="35.3"></div>
+                    <div><label class="label-style">Bone Mass (kg)</label><input type="number" step="0.1" id="bone" class="input-box" value="3.04"></div>
+                    <div><label class="label-style">Water %</label><input type="number" step="0.1" id="wat" class="input-box" value="48.0"></div>
+                    <div><label class="label-style">BMR (kcal)</label><input type="number" id="bmr" class="input-box" value="1094"></div>
+                    <div><label class="label-style">Visc Fat</label><input type="number" id="visc" class="input-box" value="8"></div>
+                    <div><label class="label-style">Metabolic Age</label><input type="number" id="mage" class="input-box" value="59"></div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="section-title">3. Gym Performance</h3>
+                <div><label class="label-style">Cardio Endurance</label><input type="text" id="cardio" class="input-box" value="17 min, 1.1 km"></div>
+                <div><label class="label-style">Bicep Curls (30s)</label><input type="number" id="bicep" class="input-box" value="19"></div>
+                <div><label class="label-style">Plank Hold (sec)</label><input type="number" id="plank" class="input-box" value="35"></div>
+                <div><label class="label-style">Agility (8-Foot Up & Go)</label><input type="number" id="agility" class="input-box" value="15"></div>
+            </div>
+        </div>
+
+        <div class="p-6 bg-gray-50 text-center">
+            <button onclick="generateReport()" class="bg-blue-700 text-white px-12 py-4 rounded-xl font-black text-xl uppercase italic shadow-lg hover:bg-blue-800">Generate Full Comprehensive Report</button>
         </div>
     </div>
 
-    <div id="printReport" class="hidden mt-10 max-w-4xl mx-auto p-12 bg-white border-[20px] border-slate-900 rounded-[3.5rem] print-area">
-        <div class="flex justify-between items-end border-b-8 border-slate-900 pb-6 mb-10">
-            <div>
-                <h1 class="text-6xl font-black italic uppercase tracking-tighter">Fitness Analysis</h1>
-                <p id="rDate" class="font-bold text-slate-400 mt-2 text-xl uppercase"></p>
-            </div>
-            <div class="text-right uppercase font-black">
-                <p class="text-blue-600 text-xl" id="rNameDisplay"></p>
-                <p class="text-xs">Tanita SC-330 Precision Scan</p>
-            </div>
+    <div id="reportArea" class="hidden print-area bg-white max-w-4xl mx-auto p-12 text-slate-800">
+        <h1 class="text-3xl font-bold text-center mb-2">Comprehensive Health & Fitness Report</h1>
+        <p class="text-center font-bold mb-8">Client: <span id="r_name"></span> | Date: <span id="r_date"></span></p>
+
+        <div class="space-y-8">
+            <section>
+                <h2 class="text-xl font-bold border-b-2 border-black mb-4 pb-1">1. Body Composition Analysis</h2>
+                <ul id="comp_list" class="space-y-2 font-medium list-disc ml-6"></ul>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-bold border-b-2 border-black mb-4 pb-1">2. Fitness Test Results</h2>
+                <ul id="test_list" class="space-y-2 font-medium list-disc ml-6"></ul>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-bold border-b-2 border-black mb-4 pb-1">3. Medical Condition & Summary</h2>
+                <div id="summary_list" class="space-y-2 font-medium"></div>
+            </section>
         </div>
 
-        <div class="grid grid-cols-2 gap-12">
-            <div class="space-y-3">
-                <h2 class="bg-slate-900 text-white px-4 py-1 text-sm font-black uppercase inline-block mb-4">Body Stats</h2>
-                <div id="statsGrid" class="text-lg font-bold uppercase divide-y-2 divide-slate-100">
-                    </div>
-            </div>
-
-            <div class="bg-slate-50 p-8 rounded-[2.5rem] border-l-[15px] border-blue-600 shadow-inner">
-                <h3 class="font-black text-xs uppercase underline mb-6 italic">Health Assessment</h3>
-                <div id="insights" class="space-y-6 text-[13px] leading-relaxed font-bold text-slate-700 italic">
-                    </div>
-            </div>
-        </div>
-
-        <div class="mt-16 text-center border-t-2 pt-6">
-            <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest italic">This report is based on bioelectrical impedance analysis (BIA) technology.</p>
-            <button onclick="window.print()" class="no-print mt-8 bg-black text-white px-12 py-4 rounded-2xl font-black uppercase text-sm">Download as PDF</button>
+        <div class="mt-12 text-center no-print">
+            <button onclick="window.print()" class="bg-black text-white px-8 py-3 rounded-lg font-bold uppercase">Print / Save as PDF</button>
         </div>
     </div>
 
     <script>
-        function makeReport() {
-            const name = document.getElementById('name').value;
-            if(!name) return alert("Pehle Name bharein!");
+        function generateReport() {
+            const get = (id) => document.getElementById(id).value;
+            const set = (id, val) => document.getElementById(id).innerHTML = val;
 
-            document.getElementById('rNameDisplay').innerText = name;
-            document.getElementById('rDate').innerText = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+            document.getElementById('reportArea').classList.remove('hidden');
+            set('r_name', `${get('name')} (Age ${get('age')})`);
+            set('r_date', new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}));
 
-            const data = {
-                "Weight": document.getElementById('w').value + " kg",
-                "BMI": document.getElementById('bmi').value,
-                "Body Fat %": document.getElementById('fatp').value + "%",
-                "Fat Mass": document.getElementById('fatm').value + " kg",
-                "FFM": document.getElementById('ffm').value + " kg",
-                "Muscle Mass": document.getElementById('mus').value + " kg",
-                "BMR": document.getElementById('bmr').value + " kcal",
-                "Bone Mass": document.getElementById('bone').value + " kg",
-                "Visceral Fat": document.getElementById('visc').value,
-                "Metabolic Age": document.getElementById('mage').value + " Yrs",
-                "Height": document.getElementById('ht').value + " cm"
-            };
+            // Analysis Logic
+            const bmi = parseFloat(get('bmi'));
+            const bmiTag = bmi > 25 ? '<span class="text-red-600">(Overweight range)</span>' : '<span class="text-green-600">(Healthy)</span>';
+            const fatp = parseFloat(get('fatp'));
+            const fatTag = fatp > 30 ? '<span class="text-red-600">(High)</span>' : '<span class="text-green-600">(Normal)</span>';
 
-            let statsHtml = '';
-            for (const [key, value] of Object.entries(data)) {
-                statsHtml += `<div class="flex justify-between py-2"><span>${key}:</span> <span class="${key==='Weight'?'text-blue-600':''}">${value}</span></div>`;
-            }
-            document.getElementById('statsGrid').innerHTML = statsHtml;
+            set('comp_list', `
+                <li>Weight: ${get('w')} kg</li>
+                <li>BMI: ${bmi} ${bmiTag}</li>
+                <li>Body Fat %: ${fatp}% ${fatTag}</li>
+                <li>Visceral Fat: ${get('visc')} (Healthy, but monitor)</li>
+                <li>Muscle Mass: ${get('mus')} kg (Healthy)</li>
+                <li>Water %: ${get('wat')}% (Low, should be >50%)</li>
+                <li>Bone Mass: ${get('bone')} kg (Healthy)</li>
+                <li>Metabolic Age: ${get('mage')} yrs</li>
+            `);
 
-            // Simple Logic for Insights
-            const fat = parseFloat(document.getElementById('fatp').value);
-            const bmr = parseInt(document.getElementById('bmr').value);
-            
-            let insightHtml = `
-                <p>🚀 <b>Overall Summary:</b> Aapka Metabolic Age <b>${document.getElementById('mage').value} saal</b> hai, jo aapki asal age ke kaafi kareeb hai.</p>
-                <p>🔥 <b>BMR Focus:</b> Daily <b>${bmr} kcal</b> aapki maintenance requirement hai. Isse kam diet na lein.</p>
-            `;
-            if(fat > 22) insightHtml += `<p>⚖️ <b>Fat Loss:</b> Fat % thoda high side par hai. Diet mein fiber badhayein.</p>`;
-            
-            document.getElementById('insights').innerHTML = insightHtml;
-            document.getElementById('printReport').classList.remove('hidden');
+            set('test_list', `
+                <li>Cardio Endurance: ${get('cardio')} (Below average stamina)</li>
+                <li>Upper Body Strength: ${get('bicep')} reps in 30 sec (Normal)</li>
+                <li>Core Strength: ${get('plank')} sec (Good)</li>
+                <li>Agility: ${get('agility')} sec (Normal is 5-6 sec)</li>
+            `);
+
+            set('summary_list', `
+                <p>• Medical Condition: <span class="text-orange-600 font-bold">${get('med')}</span></p>
+                <p>• Recommendation: Focus on moderate cardio and strength training.</p>
+            `);
+
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
