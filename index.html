@@ -3,135 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Pro AI Portal</title>
+    <title>Fitness AI Analysis Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        .input-box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-weight: 600; width: 100%; }
-        .label-style { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 2px; display: block; }
-        .report-text { font-family: 'Georgia', serif; color: #1e293b; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        @media print { .no-print { display: none; } .print-area { display: block !important; } }
+        .input-box { border: 2px solid #e2e8f0; border-radius: 10px; padding: 12px; font-weight: 700; width: 100%; transition: 0.3s; }
+        .input-box:focus { border-color: #2563eb; outline: none; background: #f8fafc; }
+        .label-text { font-size: 11px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 4px; display: block; }
     </style>
 </head>
-<body class="bg-gray-100 p-4">
+<body class="bg-slate-100 p-4 md:p-8">
 
-    <div class="max-w-5xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden mb-10 no-print">
-        <div class="bg-blue-900 p-6 text-center text-white font-black text-2xl italic tracking-tighter uppercase">Fitness AI Analysis Portal</div>
-        
-        <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="space-y-4">
-                <h3 class="font-black text-blue-700 uppercase border-b-2 border-blue-100 pb-2 italic">1. Client Info</h3>
-                <div><label class="label-style">Client Name</label><input type="text" id="name" class="input-box" placeholder="e.g. Rahul Sharma"></div>
-                <div><label class="label-style">Age & Gender</label>
-                    <div class="flex gap-2">
-                        <input type="number" id="age" class="input-box" placeholder="Age">
-                        <select id="gender" class="input-box"><option>Male</option><option>Female</option></select>
-                    </div>
+    <div class="max-w-6xl mx-auto no-print bg-white rounded-[2.5rem] shadow-2xl border-t-[12px] border-blue-600 p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-black italic uppercase tracking-tighter text-slate-800">Fitness AI <span class="text-blue-600">Analysis Portal</span></h1>
+            <p class="text-slate-400 font-bold text-xs mt-1">UPLOAD SLIP -> AI ANALYSIS -> GENERATE PDF</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div class="space-y-6">
+                <div class="bg-slate-50 p-6 rounded-3xl border-2 border-dashed border-slate-300 text-center">
+                    <input type="file" accept="image/*" id="fileInput" onchange="preview(event)" class="text-sm font-bold">
                 </div>
-            </div>
-
-            <div class="space-y-4">
-                <h3 class="font-black text-blue-700 uppercase border-b-2 border-blue-100 pb-2 italic">2. Tanita Stats</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="label-style">Weight (kg)</label><input type="number" step="0.1" id="w" class="input-box"></div>
-                    <div><label class="label-style">Fat %</label><input type="number" step="0.1" id="fatp" class="input-box"></div>
-                    <div><label class="label-style">Muscle (kg)</label><input type="number" step="0.1" id="mus" class="input-box"></div>
-                    <div><label class="label-style">BMI</label><input type="number" step="0.1" id="bmi" class="input-box"></div>
-                    <div><label class="label-style">Visc Fat</label><input type="number" id="visc" class="input-box"></div>
-                    <div><label class="label-style">Metabolic Age</label><input type="number" id="mage" class="input-box"></div>
+                <div class="bg-black rounded-[2rem] h-[400px] flex items-center justify-center overflow-hidden border-4 border-white shadow-inner">
+                    <img id="imgViewer" class="hidden w-full h-full object-contain">
+                    <p id="placeholderText" class="text-slate-500 font-bold text-sm uppercase">Preview Slip Here</p>
                 </div>
+                <button onclick="startAIScan()" id="scanBtn" class="w-full bg-blue-600 text-white py-6 rounded-2xl font-black text-2xl uppercase italic shadow-xl hover:bg-blue-700 transition-all">
+                    Run AI Scan
+                </button>
             </div>
 
-            <div class="space-y-4">
-                <h3 class="font-black text-blue-700 uppercase border-b-2 border-blue-100 pb-2 italic">3. Other Metrics</h3>
-                <div><label class="label-style">TBW (Water %)</label><input type="number" step="0.1" id="wat" class="input-box"></div>
-                <div><label class="label-style">Bone Mass (kg)</label><input type="number" step="0.1" id="bone" class="input-box"></div>
-                <div><label class="label-style">Medical Condition</label><input type="text" id="med" class="input-box" placeholder="e.g. BP / None"></div>
-            </div>
-        </div>
+            <div class="space-y-6 bg-slate-50 p-8 rounded-[2rem]">
+                <div>
+                    <label class="label-text">Client Name</label>
+                    <input type="text" id="c_name" class="input-box bg-yellow-50" placeholder="ENTER CLIENT NAME">
+                </div>
 
-        <div class="p-8 text-center bg-gray-50 border-t">
-            <button onclick="generateDetailedPDF()" class="bg-blue-700 text-white px-12 py-5 rounded-2xl font-black text-xl uppercase italic shadow-xl hover:scale-105 transition-all">Generate Professional PDF Report</button>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="label-text">Age</label><input type="number" id="c_age" class="input-box"></div>
+                    <div><label class="label-text">Height (cm)</label><input type="number" id="c_ht" class="input-box"></div>
+                    <div><label class="label-text">Weight (kg)</label><input type="number" step="0.1" id="c_w" class="input-box"></div>
+                    <div><label class="label-text">BMI</label><input type="number" step="0.1" id="c_bmi" class="input-box"></div>
+                    <div><label class="label-text">Fat %</label><input type="number" step="0.1" id="c_fat" class="input-box"></div>
+                    <div><label class="label-text">Muscle (kg)</label><input type="number" step="0.1" id="c_mus" class="input-box"></div>
+                    <div><label class="label-text">BMR (kcal)</label><input type="number" id="c_bmr" class="input-box"></div>
+                    <div><label class="label-text">Water %</label><input type="number" step="0.1" id="c_wat" class="input-box"></div>
+                    <div><label class="label-text">Metabolic Age</label><input type="number" id="c_mage" class="input-box"></div>
+                    <div><label class="label-text">Visceral Fat</label><input type="number" id="c_visc" class="input-box"></div>
+                </div>
+                
+                <button onclick="generateFinalReport()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-xl uppercase italic shadow-2xl hover:bg-black">Generate Report</button>
+            </div>
         </div>
     </div>
 
-    <div id="finalReport" class="hidden bg-white p-12 max-w-4xl mx-auto shadow-inner report-text" style="width: 800px;">
-        <div class="border-b-4 border-black pb-4 mb-8 flex justify-between items-end">
-            <div>
-                <h1 class="text-4xl font-bold uppercase tracking-tight">Comprehensive Fitness Report</h1>
-                <p class="text-gray-500 font-bold mt-2 italic">Client: <span id="r_name" class="text-black not-italic underline"></span></p>
-            </div>
-            <div class="text-right">
-                <p id="r_date" class="font-black text-sm"></p>
-                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Powered by Tanita AI Scanner</p>
-            </div>
-        </div>
+    <div id="pdfReport" class="hidden bg-white p-16 max-w-4xl mx-auto text-slate-900 print-area" style="min-height: 1100px;">
+        <h1 class="text-3xl font-bold text-center mb-2">Comprehensive Health & Fitness Report</h1>
+        <p class="text-center font-bold mb-10 text-lg">Client: <span id="r_name"></span> | Date: <span id="r_date"></span></p>
 
         <div class="space-y-10">
             <section>
-                <h2 class="text-xl font-black text-blue-900 border-l-8 border-blue-900 pl-4 mb-6 uppercase tracking-wider bg-blue-50 py-1">1. Body Composition Analysis</h2>
-                <div id="analysis_rows" class="grid grid-cols-1 gap-4 text-sm font-bold ml-4">
+                <h2 class="text-xl font-bold border-b-2 border-black pb-1 mb-4">1. Body Composition Analysis</h2>
+                <div id="r_comp" class="space-y-2 text-[15px] font-medium ml-4">
                     </div>
             </section>
 
             <section>
-                <h2 class="text-xl font-black text-blue-900 border-l-8 border-blue-900 pl-4 mb-6 uppercase tracking-wider bg-blue-50 py-1">2. AI Summary & Recommendations</h2>
-                <div id="ai_summary" class="space-y-4 text-sm font-bold text-gray-700 italic border-l-2 border-gray-100 pl-6 ml-4">
+                <h2 class="text-xl font-bold border-b-2 border-black pb-1 mb-4">2. Summary & Recommendations</h2>
+                <div id="r_summary" class="space-y-4 text-[15px] font-medium ml-4 italic text-slate-700">
                     </div>
             </section>
-        </div>
-
-        <div class="mt-20 pt-8 border-t border-gray-100 text-center">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.5em]">Confidential Health Document</p>
         </div>
     </div>
 
     <script>
-        function generateDetailedPDF() {
+        let selectedFile;
+        function preview(e) {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById('imgViewer').src = ev.target.result;
+                    document.getElementById('imgViewer').classList.remove('hidden');
+                    document.getElementById('placeholderText').classList.add('hidden');
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        }
+
+        async function startAIScan() {
+            if (!selectedFile) return alert("Please select a slip!");
+            const btn = document.getElementById('scanBtn');
+            btn.innerText = "Scanning Slip...";
+            
+            try {
+                const { data: { text } } = await Tesseract.recognize(selectedFile, 'eng');
+                const decimals = text.match(/\d+\.\d+/g) || [];
+                
+                // Smart Fill based on Tanita SC-330 Order
+                document.getElementById('c_w').value = decimals[0] || "";
+                document.getElementById('c_fat').value = decimals[1] || "";
+                document.getElementById('c_mus').value = decimals[3] || "";
+                document.getElementById('c_wat').value = decimals[5] || "";
+                document.getElementById('c_bmi').value = decimals[7] || decimals[1];
+
+                const bmr = text.match(/(\d{4})\s*kcal/i);
+                if(bmr) document.getElementById('c_bmr').value = bmr[1];
+
+                const mage = text.match(/METABOLIC AGE\s*(\d+)/i);
+                if(mage) document.getElementById('c_mage').value = mage[1];
+
+                const visc = text.match(/VISCERAL FAT RATING\s*(\d+)/i);
+                if(visc) document.getElementById('c_visc').value = visc[1];
+
+                alert("AI Scan Complete! Please verify values.");
+            } catch (e) { alert("Scan Failed. Poor lighting?"); }
+            btn.innerText = "Run AI Scan Again";
+        }
+
+        function generateFinalReport() {
             const get = (id) => document.getElementById(id).value;
-            const rArea = document.getElementById('finalReport');
-            rArea.classList.remove('hidden');
+            const r_div = document.getElementById('pdfReport');
+            r_div.classList.remove('hidden');
 
-            document.getElementById('r_name').innerText = `${get('name')} (Age: ${get('age')})`;
-            document.getElementById('r_date').innerText = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+            document.getElementById('r_name').innerText = `${get('c_name')} (Age ${get('c_age')})`;
+            document.getElementById('r_date').innerText = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
 
-            // AI LOGIC FOR ANALYSIS (Like Nandini Mam's Report)
-            const bmi = parseFloat(get('bmi'));
-            const fat = parseFloat(get('fatp'));
-            const mage = parseInt(get('mage'));
-            const age = parseInt(get('age'));
-            const visc = parseInt(get('visc'));
+            const bmi = parseFloat(get('c_bmi'));
+            const fat = parseFloat(get('c_fat'));
 
-            let analysisHtml = '';
-            
-            // Weight & BMI Analysis
-            analysisHtml += `<div>- Weight: ${get('w')} kg ${bmi > 25 ? '<span class="text-orange-600">(Slightly High)</span>' : '<span class="text-green-600">(Normal)</span>'}</div>`;
-            analysisHtml += `<div>- BMI: ${bmi} ${bmi > 25 ? '<span class="text-red-600">(Overweight Range)</span>' : '<span class="text-green-600">(Healthy Range)</span>'}</div>`;
-            analysisHtml += `<div>- Body Fat: ${fat}% ${fat > 25 ? '<span class="text-red-600">(High - Action Required)</span>' : '<span class="text-green-600">(Healthy)</span>'}</div>`;
-            analysisHtml += `<div>- Visceral Fat: ${visc} ${visc > 10 ? '<span class="text-red-600">(Warning: High Internal Fat)</span>' : '<span class="text-green-600">(Healthy Range)</span>'}</div>`;
-            analysisHtml += `<div>- Metabolic Age: ${mage} yrs ${mage > age ? '<span class="text-orange-600">(Above actual age - Need Focus)</span>' : '<span class="text-green-600">(Better than actual age)</span>'}</div>`;
+            document.getElementById('r_comp').innerHTML = `
+                <p>- Weight: ${get('c_w')} kg ${get('c_w') > 65 ? '<span class="text-orange-600">(Slightly High)</span>':'<span class="text-green-600">(Healthy)</span>'}</p>
+                <p>- BMI: ${get('c_bmi')} ${bmi > 25 ? '<span class="text-red-600">(Overweight range)</span>':'<span class="text-green-600">(Healthy)</span>'}</p>
+                <p>- Body Fat %: ${get('c_fat')}% ${fat > 25 ? '<span class="text-red-600">(High)</span>':'<span class="text-green-600">(Healthy)</span>'}</p>
+                <p>- Muscle Weight: ${get('c_mus')} kg (Healthy)</p>
+                <p>- Metabolic Age: ${get('c_mage')} yrs ${get('c_mage') > get('c_age') ? '<span class="text-orange-600">(Slightly above actual age)</span>':'<span class="text-green-600">(Younger than actual age)</span>'}</p>
+                <p>- Visceral Fat: ${get('c_visc')} (Healthy, but monitor)</p>
+                <p>- Water %: ${get('c_wat')}% ${get('c_wat') < 55 ? '<span class="text-orange-600">(Low, should be >55%)</span>':'<span class="text-green-600">(Good)</span>'}</p>
+            `;
 
-            document.getElementById('analysis_rows').innerHTML = analysisHtml;
+            document.getElementById('r_summary').innerHTML = `
+                <p>• Muscle mass and strength are vital for your foundation. Focus on protein intake.</p>
+                <p>• Your Metabolic Age is ${get('c_mage')}. Maintaining a young metabolism requires consistent training.</p>
+                <p>• Recommendation: Increase water intake and focus on 30 mins of daily activity.</p>
+            `;
 
-            // Recommendations
-            let recs = `<p>• Medical History: <span class="text-blue-800">${get('med') || 'None Reported'}</span></p>`;
-            if(fat > 25) recs += `<p class="text-red-700">• Fat percentage is high. Focus on clean diet and 45-min cardio sessions.</p>`;
-            if(mage <= age) recs += `<p class="text-green-700">• Great Job! Your metabolism is younger than your actual age. Keep it up.</p>`;
-            recs += `<p>• Focus on consistent hydration (Water % is ${get('wat')}%). Target >55% for optimal recovery.</p>`;
-
-            document.getElementById('ai_summary').innerHTML = recs;
-
-            // PDF GENERATION
-            const opt = {
-                margin: 0.5,
-                filename: `${get('name')}_Health_Report.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(rArea).save().then(() => {
-                rArea.classList.add('hidden');
-            });
+            const opt = { margin: 0.5, filename: `${get('c_name')}_Report.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+            html2pdf().set(opt).from(r_div).save().then(() => r_div.classList.add('hidden'));
         }
     </script>
 </body>
