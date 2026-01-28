@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Test Report Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            .print-only { display: block; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4">
+
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg no-print mb-10">
+        <h2 class="text-2xl font-bold mb-6 text-blue-600 border-b pb-2">Client Fitness Data Entry</h2>
+        
+        <form id="reportForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <h3 class="font-semibold text-gray-700">Basic Information</h3>
+                <input type="text" id="name" placeholder="Client Name" class="w-full p-2 border rounded" value="Nandini Mam">
+                <input type="number" id="age" placeholder="Age" class="w-full p-2 border rounded" value="58">
+                <input type="text" id="medCondition" placeholder="Medical Condition" class="w-full p-2 border rounded" value="Hypertension">
+                <input type="text" id="meds" placeholder="Medications" class="w-full p-2 border rounded" value="Tazloc-AM, Tazloc-20">
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="font-semibold text-gray-700">Body Composition</h3>
+                <input type="number" step="0.1" id="weight" placeholder="Weight (kg)" class="w-full p-2 border rounded">
+                <input type="number" step="0.1" id="fat" placeholder="Body Fat %" class="w-full p-2 border rounded">
+                <input type="number" step="0.1" id="muscle" placeholder="Skeletal Muscle %" class="w-full p-2 border rounded">
+                <input type="number" step="0.1" id="water" placeholder="Water %" class="w-full p-2 border rounded">
+            </div>
+
+            <div class="space-y-4 md:col-span-2">
+                <h3 class="font-semibold text-gray-700 border-t pt-4">Fitness Test Scores</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <input type="text" id="cardio" placeholder="Cardio (Min/Km/Cal)" class="p-2 border rounded">
+                    <input type="number" id="hr" placeholder="Heart Rate (BPM)" class="p-2 border rounded">
+                    <input type="number" id="curls" placeholder="Bicep Curls (Reps)" class="p-2 border rounded">
+                    <input type="number" id="plank" placeholder="Plank (Sec)" class="p-2 border rounded">
+                    <input type="number" id="press" placeholder="Overhead Press (Reps)" class="p-2 border rounded">
+                    <input type="number" id="sitstand" placeholder="Sit & Stand (Reps)" class="p-2 border rounded">
+                    <input type="text" id="flexibility" placeholder="Flexibility Status" class="p-2 border rounded">
+                    <input type="text" id="balance" placeholder="Balance (R/L Sec)" class="p-2 border rounded">
+                </div>
+            </div>
+
+            <button type="button" onclick="generateReport()" class="md:col-span-2 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">Generate & Preview Report</button>
+        </form>
+    </div>
+
+    <div id="reportDisplay" class="max-w-4xl mx-auto bg-white p-10 rounded shadow-2xl hidden">
+        <div class="flex justify-between items-center border-b-2 border-blue-600 pb-4 mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Health & Fitness Report</h1>
+                <p class="text-gray-500" id="displayDate"></p>
+            </div>
+            <div class="text-right">
+                <p class="font-bold text-lg" id="displayName"></p>
+                <p class="text-sm">Age: <span id="displayAge"></span></p>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="bg-blue-100 p-2 font-bold mb-4">1. Body Composition Analysis</h2>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="border p-2">Metric</th>
+                        <th class="border p-2">Value</th>
+                        <th class="border p-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="compositionTable"></tbody>
+            </table>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="bg-blue-100 p-2 font-bold mb-4">2. Performance Scorecard</h2>
+            <div class="grid grid-cols-2 gap-4" id="fitnessGrid"></div>
+        </div>
+
+        <div class="mb-8 p-4 bg-red-50 border-l-4 border-red-500">
+            <h2 class="font-bold text-red-700 mb-2">3. Medical Condition & Precautions</h2>
+            <p><strong>Condition:</strong> <span id="displayMed"></span></p>
+            <p><strong>Meds:</strong> <span id="displayMeds"></span></p>
+            <p class="mt-2 text-sm text-red-600"><strong>Note:</strong> Monitor BP regularly. Avoid sudden high-intensity bursts.</p>
+        </div>
+
+        <button onclick="window.print()" class="no-print bg-green-600 text-white px-6 py-2 rounded">Download PDF / Print</button>
+    </div>
+
+    <script>
+        function generateReport() {
+            // Get values
+            const data = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                weight: document.getElementById('weight').value,
+                fat: document.getElementById('fat').value,
+                muscle: document.getElementById('muscle').value,
+                water: document.getElementById('water').value,
+                cardio: document.getElementById('cardio').value,
+                hr: document.getElementById('hr').value,
+                curls: document.getElementById('curls').value,
+                plank: document.getElementById('plank').value,
+                med: document.getElementById('medCondition').value,
+                meds: document.getElementById('meds').value
+            };
+
+            // Display Basic Info
+            document.getElementById('displayName').innerText = data.name;
+            document.getElementById('displayAge').innerText = data.age;
+            document.getElementById('displayDate').innerText = new Date().toLocaleDateString();
+            document.getElementById('displayMed').innerText = data.med;
+            document.getElementById('displayMeds').innerText = data.meds;
+
+            // Simple Logic for Table
+            const compHtml = `
+                <tr><td class="border p-2">Weight</td><td class="border p-2">${data.weight} kg</td><td class="border p-2 text-orange-600">Monitor</td></tr>
+                <tr><td class="border p-2">Muscle %</td><td class="border p-2">${data.muscle}%</td><td class="border p-2 text-green-600">Perfect</td></tr>
+                <tr><td class="border p-2">Water %</td><td class="border p-2">${data.water}%</td><td class="border p-2 text-red-600">Low (Drink More)</td></tr>
+            `;
+            document.getElementById('compositionTable').innerHTML = compHtml;
+
+            // Fitness Grid
+            const fitnessHtml = `
+                <div class="border p-3 rounded"><strong>Cardio:</strong> ${data.cardio} <br> <span class="text-blue-500">HR: ${data.hr} BPM</span></div>
+                <div class="border p-3 rounded"><strong>Strength:</strong> ${data.curls} Curls (30s)</div>
+                <div class="border p-3 rounded"><strong>Core:</strong> ${data.plank} Sec Plank</div>
+                <div class="border p-3 rounded"><strong>Flexibility:</strong> ${document.getElementById('flexibility').value}</div>
+            `;
+            document.getElementById('fitnessGrid').innerHTML = fitnessHtml;
+
+            // Show Report
+            document.getElementById('reportDisplay').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
