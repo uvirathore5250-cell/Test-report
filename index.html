@@ -8,73 +8,79 @@
     <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
     <style>
         @media print { .no-print { display: none; } .print-area { display: block !important; } }
-        .scan-btn { background: #2563eb; color: white; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 15px; transition: 0.3s; }
-        .scan-btn:hover { background: #1d4ed8; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; }
+        .scan-btn { background: #000; color: white; padding: 18px; border-radius: 12px; font-weight: 900; width: 100%; margin-top: 15px; transition: 0.3s; border: 2px solid black; }
+        .scan-btn:hover { background: #333; transform: scale(1.01); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #ffffff; border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-gray-50 p-4 font-sans">
+<body class="bg-gray-100 p-4 font-sans">
 
     <div class="max-w-6xl mx-auto no-print">
-        <h1 class="text-3xl font-black text-center mb-8 uppercase italic border-b-4 border-black pb-2">AI Fitness Scan Portal</h1>
+        <h1 class="text-4xl font-black text-center mb-8 uppercase italic border-b-8 border-black pb-2">AI Fitness Scan Portal</h1>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="bg-white p-6 rounded-3xl shadow-xl border-2 border-black">
-                <h3 class="font-black text-xs mb-4 bg-black text-white inline-block px-3 py-1">STEP 1: UPLOAD & SCAN</h3>
-                <input type="file" accept="image/*" id="bmi_image" onchange="previewFile(event)" class="w-full mb-4 font-bold">
+                <div class="bg-red-600 text-white px-4 py-1 font-black text-xs mb-4 inline-block uppercase">Step 1: Upload & Process</div>
                 
-                <div class="bg-gray-100 rounded-2xl h-[400px] flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300 relative">
+                <label class="block mb-2 text-sm font-bold text-gray-700">BMI Slip Photo Choose Karein:</label>
+                <input type="file" accept="image/*" id="bmi_image" onchange="previewFile(event)" class="w-full mb-6 p-2 border-2 border-dashed rounded-lg bg-gray-50">
+                
+                <div class="bg-gray-200 rounded-2xl h-[350px] flex items-center justify-center overflow-hidden border-2 mb-4">
                     <img id="image_preview" class="hidden w-full h-full object-contain">
-                    <p id="msg" class="text-gray-400 font-bold uppercase text-xs">Awaiting BMI Slip...</p>
+                    <p id="msg" class="text-gray-400 font-black uppercase text-center p-10">Slip ki photo yahan dikhegi</p>
                 </div>
 
-                <button id="upload_scan_btn" onclick="performScan()" class="hidden scan-btn uppercase tracking-widest">
-                    <span id="btn_text">Upload & Scan BMI Slip</span>
+                <button id="upload_scan_btn" onclick="performScan()" class="scan-btn uppercase tracking-tighter text-xl">
                     <div id="btn_loader" class="hidden loader"></div>
+                    <span id="btn_text">Click to Scan Slip Now</span>
                 </button>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl shadow-xl border-t-[16px] border-black">
+            <div class="bg-white p-6 rounded-3xl shadow-xl border-t-[20px] border-black">
                 <div class="space-y-4">
-                    <input type="text" id="client_name" placeholder="CLIENT NAME" class="w-full p-4 border-2 rounded-2xl font-black bg-gray-50 uppercase shadow-inner">
+                    <div class="bg-black text-white px-4 py-1 font-black text-xs inline-block uppercase mb-2">Step 2: Check & Add Performance</div>
+                    
+                    <input type="text" id="client_name" placeholder="CLIENT NAME" class="w-full p-4 border-2 rounded-2xl font-black bg-yellow-50 uppercase text-xl border-black">
                     
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="p-2 border rounded-xl bg-blue-50"><label class="text-[9px] font-black text-blue-800 uppercase">Weight (kg)</label><input type="text" id="v_w" class="w-full bg-transparent font-bold outline-none"></div>
-                        <div class="p-2 border rounded-xl bg-blue-50"><label class="text-[9px] font-black text-blue-800 uppercase">BMI</label><input type="text" id="v_bmi" class="w-full bg-transparent font-bold outline-none"></div>
-                        <div class="p-2 border rounded-xl bg-blue-50"><label class="text-[9px] font-black text-blue-800 uppercase">Fat %</label><input type="text" id="v_fat" class="w-full bg-transparent font-bold outline-none"></div>
-                        <div class="p-2 border rounded-xl bg-blue-50"><label class="text-[9px] font-black text-blue-800 uppercase">Muscle %</label><input type="text" id="v_mus" class="w-full bg-transparent font-bold outline-none"></div>
-                        <div class="p-2 border rounded-xl bg-blue-50"><label class="text-[9px] font-black text-blue-800 uppercase">Water %</label><input type="text" id="v_wat" class="w-full bg-transparent font-bold outline-none"></div>
-                        <div class="p-2 border rounded-xl bg-blue-50"><label class="text-[9px] font-black text-blue-800 uppercase">Metabolic Age</label><input type="text" id="v_age" class="w-full bg-transparent font-bold outline-none"></div>
+                        <div class="p-3 border-2 rounded-xl bg-white"><label class="text-[10px] font-black text-gray-400 uppercase">Weight (kg)</label><input type="text" id="v_w" class="w-full font-black outline-none"></div>
+                        <div class="p-3 border-2 rounded-xl bg-white"><label class="text-[10px] font-black text-gray-400 uppercase">BMI</label><input type="text" id="v_bmi" class="w-full font-black outline-none"></div>
+                        <div class="p-3 border-2 rounded-xl bg-white"><label class="text-[10px] font-black text-gray-400 uppercase">Fat %</label><input type="text" id="v_fat" class="w-full font-black outline-none"></div>
+                        <div class="p-3 border-2 rounded-xl bg-white"><label class="text-[10px] font-black text-gray-400 uppercase">Muscle %</label><input type="text" id="v_mus" class="w-full font-black outline-none"></div>
+                        <div class="p-3 border-2 rounded-xl bg-white"><label class="text-[10px] font-black text-gray-400 uppercase">Water %</label><input type="text" id="v_wat" class="w-full font-black outline-none"></div>
+                        <div class="p-3 border-2 rounded-xl bg-white"><label class="text-[10px] font-black text-gray-400 uppercase">Metabolic Age</label><input type="text" id="v_age" class="w-full font-black outline-none"></div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 mt-2">
-                        <input type="text" id="t_bicep" placeholder="Bicep Curls" class="p-3 border rounded-xl font-bold bg-green-50 uppercase text-xs shadow-inner">
-                        <input type="text" id="t_plank" placeholder="Plank Hold" class="p-3 border rounded-xl font-bold bg-green-50 uppercase text-xs shadow-inner">
-                        <input type="text" id="t_cardio" placeholder="Cardio Score" class="p-3 border rounded-xl font-bold bg-green-50 uppercase text-xs shadow-inner">
-                        <input type="text" id="t_med" placeholder="Medical Conditions" class="p-3 border rounded-xl font-bold bg-red-50 uppercase text-xs shadow-inner">
+                        <input type="text" id="t_bicep" placeholder="Bicep Curls (Reps)" class="p-4 border-2 rounded-xl font-bold bg-green-50 uppercase text-sm border-green-200">
+                        <input type="text" id="t_plank" placeholder="Plank Hold (Sec)" class="p-4 border-2 rounded-xl font-bold bg-green-50 uppercase text-sm border-green-200">
+                        <input type="text" id="t_cardio" placeholder="Cardio (Time/KM)" class="p-4 border-2 rounded-xl font-bold bg-green-50 uppercase text-sm border-green-200">
+                        <input type="text" id="t_med" placeholder="Medical (BP? / No)" class="p-4 border-2 rounded-xl font-bold bg-red-50 uppercase text-sm border-red-200">
                     </div>
                 </div>
 
-                <button onclick="generateReport()" class="w-full mt-6 bg-black text-white py-5 rounded-2xl font-black text-xl hover:scale-[1.02] transition-all uppercase italic">Generate Report</button>
+                <button onclick="generateReport()" class="w-full mt-6 bg-blue-600 text-white py-5 rounded-2xl font-black text-2xl hover:bg-blue-700 transition-all uppercase italic">Generate AI Analysis Report</button>
             </div>
         </div>
     </div>
 
-    <div id="report" class="hidden bg-white max-w-4xl mx-auto p-12 shadow-2xl border-x-[15px] border-black my-10 print-area">
-        <h1 class="text-4xl font-black italic border-b-8 border-black pb-2 mb-6">FITNESS ASSESSMENT REPORT</h1>
-        <div class="flex justify-between mb-8">
-            <h2 id="out_name" class="text-3xl font-black uppercase"></h2>
-            <p id="out_date" class="font-bold text-gray-400"></p>
+    <div id="report" class="hidden bg-white max-w-4xl mx-auto p-12 shadow-2xl border-x-[20px] border-black my-10 print-area">
+        <h1 class="text-5xl font-black italic border-b-8 border-black pb-2 mb-6">FITNESS TEST REPORT</h1>
+        <div class="flex justify-between mb-10 items-end">
+            <h2 id="out_name" class="text-4xl font-black uppercase tracking-tighter"></h2>
+            <p id="out_date" class="font-black text-gray-400 text-xl"></p>
         </div>
-        <div class="grid grid-cols-2 gap-10">
-            <div id="out_stats" class="space-y-1 font-black text-sm uppercase"></div>
-            <div class="bg-gray-50 p-6 border-l-8 border-black rounded-r-2xl">
-                <h3 class="font-black text-xs underline mb-3 uppercase italic">AI Analysis & Precautions</h3>
-                <div id="out_ai" class="text-[11px] font-bold text-gray-700 space-y-3 leading-relaxed"></div>
+        
+        <div class="grid grid-cols-2 gap-12 mb-10">
+            <div id="out_stats" class="space-y-2 font-black text-lg uppercase border-r-4 border-gray-100 pr-10 text-gray-800"></div>
+            <div class="bg-gray-50 p-8 border-l-[12px] border-blue-600 rounded-r-3xl shadow-inner">
+                <h3 class="font-black text-sm underline mb-4 uppercase italic text-blue-900">Expert AI Analysis & Guidance</h3>
+                <div id="out_ai" class="text-sm font-bold text-gray-700 space-y-4 leading-relaxed italic"></div>
             </div>
         </div>
-        <button onclick="window.print()" class="no-print mt-10 bg-black text-white px-8 py-3 rounded-full font-bold text-xs">PRINT TO PDF</button>
+
+        <button onclick="window.print()" class="no-print w-full bg-black text-white py-4 rounded-xl font-black uppercase tracking-widest text-lg">Download as PDF / Print</button>
     </div>
 
     <script>
@@ -88,39 +94,43 @@
                     document.getElementById('image_preview').src = e.target.result;
                     document.getElementById('image_preview').classList.remove('hidden');
                     document.getElementById('msg').classList.add('hidden');
-                    document.getElementById('upload_scan_btn').classList.remove('hidden');
                 };
                 reader.readAsDataURL(selectedFile);
             }
         }
 
         async function performScan() {
+            if(!selectedFile) {
+                alert("Pehle photo select karein!");
+                return;
+            }
+
             const btnText = document.getElementById('btn_text');
             const loader = document.getElementById('btn_loader');
             
-            btnText.innerText = "Processing AI Scan...";
+            btnText.innerText = "Scanning Slip Data...";
             loader.classList.remove('hidden');
 
             try {
                 const { data: { text } } = await Tesseract.recognize(selectedFile, 'eng');
-                
-                // OCR Regex Logic
+                console.log("AI Scanned:", text);
+
                 const getVal = (reg) => {
                     const m = text.match(reg);
                     return m ? m[1] : '';
                 };
 
-                // Fill Form with Scanned Data
+                // Tanita Slip Specific Patterns
                 document.getElementById('v_w').value = getVal(/WEIGHT\s*(\d+\.\d+)/i) || getVal(/(\d+\.\d+)kg/i);
-                document.getElementById('v_bmi').value = getVal(/BMI\s*(\d+\.\d+)/i) || getVal(/(\d+\.\d+)/i);
+                document.getElementById('v_bmi').value = getVal(/BMI\s*(\d+\.\d+)/i);
                 document.getElementById('v_fat').value = getVal(/FAT\s*%\s*(\d+\.\d+)/i);
-                document.getElementById('v_mus').value = getVal(/MUSCLE\s*%\s*(\d+\.\d+)/i);
-                document.getElementById('v_wat').value = getVal(/WATER\s*(\d+\.\d+)/i) || getVal(/TBW\s*%\s*(\d+\.\d+)/i);
+                document.getElementById('v_mus').value = getVal(/MUSCLE\s*MASS\s*(\d+\.\d+)/i) || getVal(/MUSCLE\s*(\d+\.\d+)/i);
+                document.getElementById('v_wat').value = getVal(/TBW\s*%\s*(\d+\.\d+)/i) || getVal(/WATER\s*(\d+\.\d+)/i);
                 document.getElementById('v_age').value = getVal(/AGE\s*(\d+)/i);
 
-                alert("AI Scan Successful! Please verify the values.");
+                alert("AI ne data read kar liya hai! Ek baar check kar lein.");
             } catch (err) {
-                alert("Scan failed. Please fill details manually.");
+                alert("AI Reading error. Please enter manually.");
             } finally {
                 btnText.innerText = "Re-Scan BMI Slip";
                 loader.classList.add('hidden');
@@ -131,30 +141,34 @@
             const n = document.getElementById('client_name').value;
             const mus = parseFloat(document.getElementById('v_mus').value) || 0;
             const wat = parseFloat(document.getElementById('v_wat').value) || 0;
+            const weight = document.getElementById('v_w').value;
             const med = document.getElementById('t_med').value.toLowerCase();
+
+            if(!n) { alert("Client Name bharein!"); return; }
 
             document.getElementById('out_name').innerText = n;
             document.getElementById('out_date').innerText = new Date().toLocaleDateString();
 
             document.getElementById('out_stats').innerHTML = `
-                <div class="flex justify-between border-b py-1"><span>Weight:</span><span>${document.getElementById('v_w').value} kg</span></div>
-                <div class="flex justify-between border-b py-1"><span>Muscle:</span><span>${mus}%</span></div>
-                <div class="flex justify-between border-b py-1"><span>Body Water:</span><span>${wat}%</span></div>
-                <div class="flex justify-between border-b py-1"><span>Plank:</span><span>${document.getElementById('t_plank').value} Sec</span></div>
+                <div class="flex justify-between border-b-2 py-2"><span>Body Weight:</span><span>${weight} kg</span></div>
+                <div class="flex justify-between border-b-2 py-2"><span>Muscle Mass:</span><span>${mus}%</span></div>
+                <div class="flex justify-between border-b-2 py-2"><span>Body Water:</span><span>${wat}%</span></div>
+                <div class="flex justify-between border-b-2 py-2"><span>Plank Hold:</span><span>${document.getElementById('t_plank').value} Sec</span></div>
+                <div class="flex justify-between border-b-2 py-2"><span>Bicep Curls:</span><span>${document.getElementById('t_bicep').value} Reps</span></div>
             `;
 
-            // Logic matching "Nandini Mam" Report Standard
-            let aiContent = `<p>✅ <b>Muscle Foundation:</b> Muscle mass foundation is good (${mus > 30 ? 'Strong' : 'Steady'}).</p>`;
+            // Smart Logic (Based on Nandini Mam's Profile)
+            let aiContent = `<p>🚀 <b>Overall Strength:</b> Aapka muscle foundation ${mus > 30 ? 'kafi mazboot hai' : 'thik hai, ise aur improve kar sakte hain'}.</p>`;
             
             if(wat < 50) {
-                aiContent += `<p>⚠️ <b>Hydration Alert:</b> Water percentage is ${wat}% (Low). [span_0](start_span)Ideal should be above 50%[span_0](end_span).</p>`;
+                aiContent += `<p>💧 <b>Hydration Alert:</b> Aapka water level ${wat}% hai (low). Iska target kam se kam 50% hona chahiye. Pani ka intake badhayein.</p>`;
             }
 
             if(med.includes("bp") || med.includes("hyper")) {
-                aiContent += `<p>🛑 <b>Safety Precaution:</b> Hypertension (High BP) detected. [span_1](start_span)Avoid high-intensity workouts and monitor BP before sessions[span_1](end_span).</p>`;
+                aiContent += `<p>🛑 <b>Safety Precaution:</b> Hypertension (High BP) ki wajah se high-intensity cardio se bachein. Strength training light/moderate weights ke saath karein.</p>`;
             }
 
-            [span_2](start_span)aiContent += `<p>🍎 <b>Diet:</b> Protein intake should be increased to maintain metabolism and muscle[span_2](end_span).</p>`;
+            aiContent += `<p>🥗 <b>Diet Tip:</b> Protein intake par dhyan dein taki metabolism aur muscle health barkarar rahe.</p>`;
 
             document.getElementById('out_ai').innerHTML = aiContent;
             document.getElementById('report').classList.remove('hidden');
