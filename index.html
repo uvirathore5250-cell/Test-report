@@ -3,111 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Fitness Report</title>
+    <title>Dynamic Fitness Report Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @media print { .no-print { display: none; } .print-area { box-shadow: none; border: none; width: 100%; } }
-        .metric-box { border-bottom: 1px solid #e5e7eb; padding: 8px 0; display: flex; justify-content: space-between; }
+        @media print { .no-print { display: none; } }
+        .input-card { border: 1px solid #ddd; padding: 20px; border-radius: 12px; background: white; margin-bottom: 20px; }
+        .black-label { background: black; color: white; padding: 4px 10px; font-weight: bold; font-size: 14px; display: inline-block; margin-bottom: 10px; }
     </style>
 </head>
-<body class="bg-gray-100 p-4">
+<body class="bg-gray-50 p-6">
 
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow no-print mb-8">
-        <h2 class="text-xl font-bold mb-6 border-b-2 border-blue-600 pb-2">Client Data Entry</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <h3 class="font-bold text-gray-700">Client Profile</h3>
-                <input type="text" id="in_name" placeholder="Client Name" class="w-full p-2 border rounded">
-                <input type="number" id="in_age" placeholder="Age" class="w-full p-2 border rounded">
-                <input type="text" id="in_med" placeholder="Medical Condition (e.g., Hypertension)" class="w-full p-2 border rounded">
-                <input type="text" id="in_meds" placeholder="Medications (e.g., Tazloc-AM)" class="w-full p-2 border rounded">
-            </div>
+    <div class="max-w-4xl mx-auto no-print">
+        <h1 class="text-4xl font-black text-center mb-8 uppercase italic tracking-tighter">Fitness Test Report Portal</h1>
 
-            <div class="space-y-4">
-                <h3 class="font-bold text-gray-700">Body Composition</h3>
-                <input type="text" id="in_w" placeholder="Weight (kg)" class="w-full p-2 border rounded">
-                <input type="text" id="in_f" placeholder="Body Fat %" class="w-full p-2 border rounded">
-                <input type="text" id="in_m" placeholder="Muscle %" class="w-full p-2 border rounded">
-                <input type="text" id="in_h2o" placeholder="Water %" class="w-full p-2 border rounded">
+        <div class="input-card shadow-sm">
+            <div class="black-label">CLIENT INFORMATION</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="client_name" placeholder="Enter Client Name..." class="w-full p-3 border-2 rounded-lg font-bold focus:border-blue-500 outline-none">
+                <input type="number" id="client_age" placeholder="Enter Age..." class="w-full p-3 border-2 rounded-lg font-bold">
             </div>
         </div>
 
-        <div class="mt-6 border-t pt-4">
-            <h3 class="font-bold text-gray-700 mb-4">Exercise Performance</h3>
+        <div class="input-card shadow-sm">
+            <div class="black-label">BMI & BODY COMPOSITION (FROM REPORT)</div>
+            <p class="text-xs text-gray-500 mb-4 font-semibold italic">*Enter values from the BMI machine slip</p>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <input type="text" id="in_c_min" placeholder="Cardio Mins" class="p-2 border rounded">
-                <input type="text" id="in_c_km" placeholder="Cardio KM" class="p-2 border rounded">
-                <input type="text" id="in_c_cal" placeholder="Cardio Cal" class="p-2 border rounded">
-                <input type="text" id="in_c_hr" placeholder="Heart Rate" class="p-2 border rounded">
-                <input type="text" id="in_bicep" placeholder="Bicep Curls (30s)" class="p-2 border rounded">
-                <input type="text" id="in_press" placeholder="Overhead Press" class="p-2 border rounded">
-                <input type="text" id="in_plank" placeholder="Plank Hold" class="p-2 border rounded">
-                <input type="text" id="in_sit" placeholder="Sit & Stand" class="p-2 border rounded">
-                <input type="text" id="in_flex" placeholder="Flexibility" class="p-2 border rounded col-span-2">
+                <input type="text" id="w" placeholder="Weight (kg)" class="p-2 border rounded">
+                <input type="text" id="bmi" placeholder="BMI" class="p-2 border rounded">
+                <input type="text" id="fat" placeholder="Fat %" class="p-2 border rounded">
+                <input type="text" id="muscle" placeholder="Muscle %" class="p-2 border rounded">
+                <input type="text" id="water" placeholder="Water %" class="p-2 border rounded">
+                <input type="text" id="protein" placeholder="Protein %" class="p-2 border rounded">
+                <input type="text" id="met_age" placeholder="Metabolic Age" class="p-2 border rounded">
+                <input type="text" id="vis_fat" placeholder="Visceral Fat" class="p-2 border rounded">
             </div>
         </div>
 
-        <button onclick="generateReport()" class="w-full mt-8 bg-blue-600 text-white font-black py-4 rounded-lg hover:bg-blue-700">GENERATE REPORT</button>
+        <div class="input-card shadow-sm">
+            <div class="black-label">GYM PERFORMANCE TESTS</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+                <div>
+                    <label class="text-sm font-bold block mb-1 uppercase">Bicep Curls (30 Sec)</label>
+                    <input type="text" id="test_bicep" placeholder="Enter Reps..." class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="text-sm font-bold block mb-1 uppercase">Plank Hold</label>
+                    <input type="text" id="test_plank" placeholder="Enter Seconds..." class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="text-sm font-bold block mb-1 uppercase">Cardio (Min/Km/HR)</label>
+                    <input type="text" id="test_cardio" placeholder="e.g., 15m / 1km / 120bpm" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="text-sm font-bold block mb-1 uppercase">Medical History</label>
+                    <input type="text" id="test_med" placeholder="e.g., Hypertension / No" class="w-full p-2 border rounded">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="generateReport()" class="w-full bg-black text-white font-black py-5 rounded-xl text-xl hover:bg-gray-800 transition shadow-xl">GENERATE ANALYSIS & REPORT</button>
     </div>
 
-    <div id="report" class="max-w-4xl mx-auto bg-white p-12 shadow-2xl hidden print-area">
-        <div class="flex justify-between items-start mb-8 border-b-4 border-black pb-4">
-            <h1 class="text-4xl font-black italic tracking-tighter">FITNESS REPORT</h1>
-            <div class="text-right leading-tight">
-                <p id="out_name" class="text-2xl font-bold"></p>
-                <p class="text-gray-600">Age: <span id="out_age"></span></p>
+    <div id="finalReport" class="max-w-4xl mx-auto bg-white p-10 mt-10 shadow-2xl hidden border-t-[16px] border-black">
+        <div class="flex justify-between items-center border-b-2 border-gray-100 pb-6 mb-6">
+            <h1 class="text-4xl font-black uppercase italic italic">Fitness Test Report</h1>
+            <div class="text-right">
+                <p class="text-2xl font-black" id="out_name"></p>
+                <p class="text-gray-500 font-bold">Age: <span id="out_age"></span></p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+        <div class="grid grid-cols-2 gap-10 mb-10">
             <div>
-                <h2 class="bg-gray-200 px-2 py-1 font-bold text-sm mb-4 uppercase">Body Stats</h2>
-                <div class="metric-box"><span>Weight:</span> <span class="font-bold"><span id="out_w"></span> kg</span></div>
-                <div class="metric-box"><span>Body Fat:</span> <span class="font-bold"><span id="out_f"></span>%</span></div>
-                <div class="metric-box"><span>Muscle:</span> <span class="font-bold"><span id="out_m"></span>%</span></div>
-                <div class="metric-box"><span>Water:</span> <span class="font-bold"><span id="out_h2o"></span>%</span></div>
+                <h3 class="bg-gray-100 p-1 font-black text-sm mb-3">BODY COMPOSITION DATA</h3>
+                <div class="space-y-1 text-sm font-semibold uppercase" id="out_body_stats"></div>
             </div>
-            <div class="bg-red-50 p-4 border border-red-100 rounded">
-                <h2 class="text-red-700 font-bold text-xs underline mb-3 uppercase tracking-widest">Medical / Safety</h2>
-                <p class="text-sm mb-2"><strong>Condition:</strong> <span id="out_med"></span></p>
-                <p class="text-sm"><strong>Meds:</strong> <span id="out_meds"></span></p>
+            <div class="bg-red-50 p-4 border border-red-200">
+                <h3 class="text-red-700 font-black text-xs mb-2">MEDICAL ADVISORY</h3>
+                <p class="text-sm font-bold" id="out_med"></p>
             </div>
         </div>
 
-        <h2 class="bg-black text-white px-2 py-1 font-bold text-sm mb-6 uppercase">Exercise Performance</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 text-sm">
-            <div class="metric-box"><span>Cardio Time:</span> <span class="font-bold" id="out_c_min"></span></div>
-            <div class="metric-box"><span>Cardio Distance:</span> <span class="font-bold" id="out_c_km"></span></div>
-            <div class="metric-box"><span>Cardio Calories:</span> <span class="font-bold" id="out_c_cal"></span></div>
-            <div class="metric-box"><span>Heart Rate:</span> <span class="font-bold" id="out_c_hr"></span></div>
-            <div class="metric-box"><span>Bicep Curls:</span> <span class="font-bold" id="out_bicep"></span></div>
-            <div class="metric-box"><span>Overhead Press:</span> <span class="font-bold" id="out_press"></span></div>
-            <div class="metric-box"><span>Plank Hold:</span> <span class="font-bold" id="out_plank"></span></div>
-            <div class="metric-box"><span>Sit & Stand:</span> <span class="font-bold" id="out_sit"></span></div>
-            <div class="metric-box"><span>Flexibility:</span> <span class="font-bold" id="out_flex"></span></div>
+        <h3 class="bg-black text-white p-1 font-black text-sm mb-4 px-3">PERFORMANCE LOG</h3>
+        <div class="grid grid-cols-2 gap-4 text-sm font-bold uppercase mb-10" id="out_perf"></div>
+
+        <div class="bg-blue-50 p-6 border-l-4 border-blue-600 rounded">
+            <h3 class="font-black text-blue-800 text-lg mb-3">AI ANALYSIS & RECOMMENDATIONS</h3>
+            <div id="ai_analysis" class="text-sm space-y-3 font-medium text-gray-700"></div>
         </div>
 
-        <div class="mt-12 flex justify-between border-t border-gray-200 pt-4">
-            <span class="text-[10px] text-gray-400 uppercase italic">Certified Fitness Assessment Report</span>
-            <button onclick="window.print()" class="no-print bg-blue-600 text-white px-6 py-2 rounded-lg font-bold text-xs uppercase shadow-md">Print Report</button>
-        </div>
+        <button onclick="window.print()" class="no-print mt-10 bg-blue-600 text-white px-8 py-3 rounded-lg font-bold">Download / Print PDF</button>
     </div>
 
     <script>
         function generateReport() {
-            // Mapping Inputs to Outputs
-            const fields = [
-                'name','age','med','meds','w','f','m','h2o',
-                'c_min','c_km','c_cal','c_hr','bicep','press','plank','sit','flex'
-            ];
-            
-            fields.forEach(f => {
-                document.getElementById('out_' + f).innerText = document.getElementById('in_' + f).value || '--';
-            });
+            // Mapping basic info
+            const name = document.getElementById('client_name').value;
+            const age = document.getElementById('client_age').value;
+            if(!name) { alert("Please enter client name!"); return; }
 
-            document.getElementById('report').classList.remove('hidden');
-            window.scrollTo({ top: document.getElementById('report').offsetTop, behavior: 'smooth' });
+            document.getElementById('out_name').innerText = name;
+            document.getElementById('out_age').innerText = age;
+            document.getElementById('out_med').innerText = "Condition: " + document.getElementById('test_med').value;
+
+            // Body Stats Logic
+            const stats = [
+                {l: "Weight", v: document.getElementById('w').value + " kg"},
+                {l: "BMI", v: document.getElementById('bmi').value},
+                {l: "Body Fat", v: document.getElementById('fat').value + "%"},
+                {l: "Muscle", v: document.getElementById('muscle').value + "%"},
+                {l: "Water", v: document.getElementById('water').value + "%"},
+                {l: "Metabolic Age", v: document.getElementById('met_age').value}
+            ];
+            document.getElementById('out_body_stats').innerHTML = stats.map(s => `<div class="flex justify-between border-b pb-1"><span>${s.l}:</span><span>${s.v}</span></div>`).join('');
+
+            // Performance Logic
+            const perf = [
+                {l: "Cardio", v: document.getElementById('test_cardio').value},
+                {l: "Bicep Curls", v: document.getElementById('test_bicep').value},
+                {l: "Plank Hold", v: document.getElementById('test_plank').value + " Sec"}
+            ];
+            document.getElementById('out_perf').innerHTML = perf.map(p => `<div class="p-2 border"><span>${p.l}:</span> <span class="float-right text-blue-600">${p.v}</span></div>`).join('');
+
+            [span_0](start_span)[span_1](start_span)// AI Logic Based on Nandini Mam's Format[span_0](end_span)[span_1](end_span)
+            let analysis = "";
+            const muscleVal = parseFloat(document.getElementById('muscle').value);
+            const waterVal = parseFloat(document.getElementById('water').value);
+            const med = document.getElementById('test_med').value.toLowerCase();
+
+            analysis += `<p>✅ <strong>Muscle Health:</strong> Muscle foundation is ${muscleVal > 30 ? 'excellent' : 'developing'}. [span_2](start_span)[span_3](start_span)Strong base for strength training[span_2](end_span)[span_3](end_span).</p>`;
+            
+            if(waterVal < 50) {
+                analysis += `<p>⚠️ <strong>Hydration:</strong> Water percentage (${waterVal}%) is low. [span_4](start_span)Increase water intake to above 50%[span_4](end_span).</p>`;
+            }
+
+            if(med.includes("bp") || med.includes("hyper")) {
+                analysis += `<p>🛑 <strong>Precaution:</strong> High BP detected. [span_5](start_span)Avoid high-intensity bursts; focus on moderate cardio[span_5](end_span).</p>`;
+            }
+
+            [span_6](start_span)analysis += `<p>🍎 <strong>Diet:</strong> Protein intake should be monitored to maintain muscle and improve metabolism[span_6](end_span).</p>`;
+
+            document.getElementById('ai_analysis').innerHTML = analysis;
+            document.getElementById('finalReport').classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>
