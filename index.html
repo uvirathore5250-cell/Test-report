@@ -3,194 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanita AI Auto-Scanner Pro</title>
+    <title>Tanita AI Scanner Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
     <style>
         @media print { .no-print { display: none; } .print-area { display: block !important; } }
-        .input-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 12px; font-weight: 800; width: 100%; outline: none; transition: 0.3s; }
-        .input-box:focus { border-color: #000; background-color: #f8fafc; }
-        .scan-active { background: #2563eb !important; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .input-box { border: 2px solid #cbd5e1; border-radius: 10px; padding: 10px; font-weight: 700; width: 100%; outline: none; }
+        .input-box:focus { border-color: #2563eb; background-color: #f0f9ff; }
+        .scan-ready { background: #2563eb !important; transform: scale(1.02); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
     </style>
 </head>
-<body class="bg-gray-100 p-2 md:p-6 font-sans">
+<body class="bg-slate-50 p-2 md:p-4 font-sans text-slate-900">
 
-    <div class="max-w-7xl mx-auto no-print">
+    <div class="max-w-[1400px] mx-auto no-print">
         <header class="text-center mb-6">
-            <h1 class="text-4xl font-black uppercase italic tracking-tighter">Tanita AI Scanner Pro</h1>
-            <p class="text-gray-500 font-bold uppercase text-[10px]">Full Body Composition Analysis</p>
+            <h1 class="text-3xl font-black uppercase italic tracking-tighter text-slate-800">Tanita AI Body Scanner</h1>
+            <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full mt-1"></div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div class="lg:col-span-5 bg-white p-6 rounded-[2.5rem] shadow-2xl border-2 border-black">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-black text-white px-3 py-1 rounded-full font-black text-[10px]">STEP 1: UPLOAD SLIP</span>
-                </div>
+            
+            <div class="lg:col-span-4 bg-white p-5 rounded-3xl shadow-lg border border-slate-200">
+                <h3 class="font-black text-[10px] text-blue-600 uppercase mb-3 tracking-widest">Step 1: Upload & Scan</h3>
                 
-                <input type="file" accept="image/*" id="bmi_file" onchange="processPreview(event)" class="w-full mb-4 text-xs font-bold file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-black file:text-white cursor-pointer">
+                <input type="file" accept="image/*" id="bmi_input" onchange="handlePreview(event)" class="w-full mb-4 text-xs font-bold file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                 
-                <div class="bg-gray-50 rounded-3xl h-[500px] flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300 mb-4 relative">
-                    <img id="slip_img" class="hidden w-full h-full object-contain p-2">
-                    <p id="placeholder_text" class="text-gray-400 font-black text-xs uppercase text-center p-10">Choose slip photo to begin</p>
+                <div class="bg-slate-100 rounded-2xl h-[450px] flex items-center justify-center overflow-hidden border-2 border-dashed border-slate-300 mb-4">
+                    <img id="preview_img" class="hidden w-full h-full object-contain">
+                    <p id="placeholder_txt" class="text-slate-400 font-bold text-xs uppercase text-center px-6 leading-relaxed">BMI Slip ki photo select karein, fir niche wala button dabayein</p>
                 </div>
 
-                <button id="scan_trigger" onclick="runAIScan()" class="w-full bg-gray-400 text-white py-5 rounded-2xl font-black text-xl uppercase tracking-widest transition-all">
-                    Start Auto-Scan
+                <button id="main_scan_btn" onclick="startOCR()" class="w-full bg-slate-400 text-white py-5 rounded-2xl font-black text-xl uppercase tracking-tighter transition-all duration-300 flex items-center justify-center gap-3">
+                    <span id="btn_txt">Scan BMI Slip Now</span>
+                    <div id="loader" class="hidden w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
                 </button>
             </div>
 
-            <div class="lg:col-span-7 bg-white p-8 rounded-[2.5rem] shadow-2xl border-t-[15px] border-black">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="lg:col-span-8 bg-white p-6 rounded-3xl shadow-lg border border-slate-200 border-t-[12px] border-t-blue-600">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="text-[10px] font-black uppercase text-gray-400">Client Name</label>
-                        <input type="text" id="in_name" class="input-box bg-yellow-50 text-xl" placeholder="NAME">
+                        <label class="text-[10px] font-black uppercase text-slate-400">Client Name</label>
+                        <input type="text" id="name" class="input-box bg-slate-50 text-xl border-slate-300" placeholder="ENTER FULL NAME">
                     </div>
 
-                    <div class="space-y-3 bg-blue-50 p-5 rounded-3xl border border-blue-100">
-                        <h3 class="font-black text-blue-900 text-xs uppercase border-b border-blue-200 pb-1 mb-2">Composition Stats</h3>
-                        <div><label class="text-[9px] font-bold text-gray-400">WEIGHT (kg)</label><input type="text" id="in_w" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">FAT %</label><input type="text" id="in_fat" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">MUSCLE MASS (kg)</label><input type="text" id="in_mus" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">TBW % (Water)</label><input type="text" id="in_wat" class="input-box"></div>
+                    <div class="space-y-4 bg-blue-50/50 p-5 rounded-2xl">
+                        <h4 class="font-black text-blue-700 text-xs uppercase border-b border-blue-100 pb-2">Body Composition</h4>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Weight (kg)</label><input type="text" id="w" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Body Fat %</label><input type="text" id="fat" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Muscle Mass (kg)</label><input type="text" id="mus" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">TBW % (Water)</label><input type="text" id="wat" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Fat Mass (kg)</label><input type="text" id="f_mass" class="input-box"></div>
                     </div>
 
-                    <div class="space-y-3 bg-purple-50 p-5 rounded-3xl border border-purple-100">
-                        <h3 class="font-black text-purple-900 text-xs uppercase border-b border-purple-200 pb-1 mb-2">Tanita Specials</h3>
-                        <div><label class="text-[9px] font-bold text-gray-400">BMI</label><input type="text" id="in_bmi" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">VISCERAL FAT RATING</label><input type="text" id="in_visc" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">BMR (kcal)</label><input type="text" id="in_bmr" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">BONE MASS (kg)</label><input type="text" id="in_bone" class="input-box"></div>
-                        <div><label class="text-[9px] font-bold text-gray-400">METABOLIC AGE</label><input type="text" id="in_age" class="input-box"></div>
+                    <div class="space-y-4 bg-indigo-50/50 p-5 rounded-2xl">
+                        <h4 class="font-black text-indigo-700 text-xs uppercase border-b border-indigo-100 pb-2">Advanced Metrics</h4>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">BMI Value</label><input type="text" id="bmi" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Visceral Fat Rating</label><input type="text" id="visc" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">BMR (kcal)</label><input type="text" id="bmr" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Metabolic Age</label><input type="text" id="age" class="input-box"></div>
+                        <div><label class="text-[9px] font-bold text-slate-500 uppercase">Bone Mass (kg)</label><input type="text" id="bone" class="input-box"></div>
                     </div>
 
-                    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4 bg-green-50 p-5 rounded-3xl border border-green-100 mt-2">
-                        <h3 class="col-span-full font-black text-green-900 text-xs uppercase border-b border-green-200 pb-1">Gym Tests</h3>
-                        <input type="text" id="in_plank" placeholder="Plank (s)" class="input-box text-xs">
-                        <input type="text" id="in_bicep" placeholder="Biceps" class="input-box text-xs">
-                        <input type="text" id="in_cardio" placeholder="Cardio" class="input-box text-xs">
-                        <input type="text" id="in_med" placeholder="Medical" class="input-box text-xs bg-red-50">
+                    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <h4 class="col-span-full font-black text-slate-500 text-xs uppercase">Gym Performance & Medical</h4>
+                        <input type="text" id="p_plank" placeholder="Plank (sec)" class="input-box text-sm">
+                        <input type="text" id="p_bicep" placeholder="Biceps (reps)" class="input-box text-sm">
+                        <input type="text" id="p_cardio" placeholder="Cardio Score" class="input-box text-sm">
+                        <input type="text" id="p_med" placeholder="Medical Condition" class="input-box text-sm bg-red-50/50 border-red-100">
                     </div>
                 </div>
 
-                <button onclick="generateFinalReport()" class="w-full mt-8 bg-black text-white py-5 rounded-2xl font-black text-2xl hover:scale-[1.01] transition-all uppercase italic shadow-2xl">Create Final Report</button>
+                <button onclick="generateReport()" class="w-full mt-8 bg-slate-900 text-white py-5 rounded-2xl font-black text-2xl hover:bg-black transition-all uppercase italic shadow-lg">Generate Full Analysis Report</button>
             </div>
         </div>
     </div>
 
-    <div id="printReport" class="hidden bg-white max-w-4xl mx-auto p-12 shadow-2xl border-x-[20px] border-black my-10 print-area">
-        <h1 class="text-5xl font-black italic border-b-8 border-black pb-4 mb-8">FITNESS ASSESSMENT</h1>
-        <div class="flex justify-between mb-12">
-            <div>
-                <h2 id="out_name" class="text-4xl font-black uppercase tracking-tighter"></h2>
-                <p class="text-gray-400 font-bold uppercase italic" id="out_date"></p>
-            </div>
-            <div class="text-right font-black uppercase text-sm border-l-4 border-black pl-4">
-                Certified Report<br>Tanita Analysis
+    <div id="finalReport" class="hidden bg-white max-w-4xl mx-auto p-12 shadow-2xl border-x-[20px] border-black my-10 print-area">
+        <div class="flex justify-between items-start border-b-8 border-black pb-4 mb-8">
+            <h1 class="text-5xl font-black italic uppercase tracking-tighter">Fitness Analysis</h1>
+            <div class="text-right">
+                <p class="font-black text-2xl" id="out_name"></p>
+                <p class="text-slate-400 font-bold" id="out_date"></p>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-12 border-b-4 border-gray-100 pb-12 mb-8">
-            <div id="out_stats" class="space-y-2 font-black text-sm uppercase text-gray-800"></div>
-            <div class="bg-gray-50 p-8 rounded-3xl shadow-inner border-l-[15px] border-blue-600">
-                <h3 class="font-black text-xs underline mb-4 uppercase italic text-blue-900">Expert AI Analysis</h3>
-                <div id="out_ai" class="text-[12px] font-bold text-gray-700 space-y-4 leading-relaxed italic"></div>
+        <div class="grid grid-cols-2 gap-12 mb-10">
+            <div id="out_stats" class="space-y-2 font-black text-sm uppercase text-slate-800 divide-y divide-slate-100"></div>
+            <div class="bg-slate-50 p-8 rounded-3xl border-l-[16px] border-blue-600 shadow-inner">
+                <h3 class="font-black text-xs underline mb-4 uppercase italic text-blue-900">AI Body Insights</h3>
+                <div id="out_ai" class="text-[13px] font-bold text-slate-600 space-y-4 leading-relaxed italic"></div>
             </div>
         </div>
-
-        <button onclick="window.print()" class="no-print w-full bg-black text-white py-4 rounded-xl font-black uppercase text-sm tracking-widest">Download PDF Report</button>
+        
+        <button onclick="window.print()" class="no-print w-full bg-black text-white py-4 rounded-xl font-black uppercase text-sm tracking-widest">Download PDF</button>
     </div>
 
     <script>
-        let myFile;
+        let selectedFile;
 
-        function processPreview(e) {
-            myFile = e.target.files[0];
-            if (myFile) {
+        function handlePreview(e) {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    document.getElementById('slip_img').src = event.target.result;
-                    document.getElementById('slip_img').classList.remove('hidden');
-                    document.getElementById('placeholder_text').classList.add('hidden');
-                    document.getElementById('scan_trigger').classList.add('scan-active');
-                    document.getElementById('scan_trigger').innerText = "Ready to Scan";
+                    document.getElementById('preview_img').src = event.target.result;
+                    document.getElementById('preview_img').classList.remove('hidden');
+                    document.getElementById('placeholder_txt').classList.add('hidden');
+                    // Button Highlight
+                    document.getElementById('main_scan_btn').classList.add('scan-ready');
+                    document.getElementById('main_scan_btn').innerText = "Ready! Click to Scan";
                 };
-                reader.readAsDataURL(myFile);
+                reader.readAsDataURL(selectedFile);
             }
         }
 
-        async function runAIScan() {
-            if(!myFile) return alert("Pehle photo upload karein!");
+        async function startOCR() {
+            if(!selectedFile) return alert("Pehle file choose karein!");
             
-            const btn = document.getElementById('scan_trigger');
-            btn.innerText = "AI Processing Slip...";
-            btn.classList.add('scan-active');
+            const btn = document.getElementById('main_scan_btn');
+            const btnTxt = document.getElementById('btn_txt');
+            const loader = document.getElementById('loader');
+
+            btnTxt.innerText = "Reading Slip...";
+            loader.classList.remove('hidden');
 
             try {
-                const { data: { text } } = await Tesseract.recognize(myFile, 'eng');
-                console.log("Raw Text Scanned:", text);
-
-                const extract = (reg) => {
-                    const m = text.match(reg);
-                    return m ? m[1] : '';
+                const { data: { text } } = await Tesseract.recognize(selectedFile, 'eng');
+                
+                const getVal = (reg) => {
+                    const match = text.match(reg);
+                    return match ? match[1] : '';
                 };
 
-                // Tanita SC-330 specific logic
-                document.getElementById('in_w').value = extract(/WEIGHT\s*(\d+\.\d+)/i) || extract(/(\d+\.\d+)\s*kg/i);
-                document.getElementById('in_fat').value = extract(/FAT\s*%\s*(\d+\.\d+)/i) || extract(/FAT\s*(\d+\.\d+)/i);
-                document.getElementById('in_mus').value = extract(/MUSCLE\s*MASS\s*(\d+\.\d+)/i) || extract(/MUSCLE\s*(\d+\.\d+)/i);
-                document.getElementById('in_wat').value = extract(/TBW\s*%\s*(\d+\.\d+)/i) || extract(/WATER\s*(\d+\.\d+)/i);
-                document.getElementById('in_bmi').value = extract(/BMI\s*(\d+\.\d+)/i);
-                document.getElementById('in_visc').value = extract(/VISCERAL\s*FAT\s*RATING\s*(\d+)/i) || extract(/VISCERAL\s*(\d+)/i);
-                document.getElementById('in_bmr').value = extract(/BMR\s*(\d+)\s*kcal/i) || extract(/BMR\s*(\d+)/i);
-                document.getElementById('in_bone').value = extract(/BONE\s*MASS\s*(\d+\.\d+)/i) || extract(/BONE\s*(\d+\.\d+)/i);
-                document.getElementById('in_age').value = extract(/METABOLIC\s*AGE\s*(\d+)/i) || extract(/AGE\s*(\d+)/i);
+                // Tanita SC-330 specific keywords
+                document.getElementById('w').value = getVal(/WEIGHT\s*(\d+\.\d+)/i) || getVal(/(\d+\.\d+)kg/i);
+                document.getElementById('fat').value = getVal(/FAT\s*%\s*(\d+\.\d+)/i);
+                document.getElementById('mus').value = getVal(/MUSCLE\s*MASS\s*(\d+\.\d+)/i);
+                document.getElementById('wat').value = getVal(/TBW\s*%\s*(\d+\.\d+)/i);
+                document.getElementById('f_mass').value = getVal(/FAT\s*MASS\s*(\d+\.\d+)/i);
+                document.getElementById('bmi').value = getVal(/BMI\s*(\d+\.\d+)/i);
+                document.getElementById('visc').value = getVal(/VISCERAL\s*FAT\s*RATING\s*(\d+)/i);
+                document.getElementById('bmr').value = getVal(/BMR\s*(\d+)\s*kcal/i);
+                document.getElementById('age').value = getVal(/METABOLIC\s*AGE\s*(\d+)/i);
+                document.getElementById('bone').value = getVal(/BONE\s*MASS\s*(\d+\.\d+)/i);
 
-                alert("Scan Complete! Sab parameters fill ho gaye hain.");
+                alert("AI ne slip padh li hai! Saare options fill ho gaye hain.");
             } catch (err) {
-                alert("Scan failed. Photo ki clarity check karein.");
+                alert("Scan fail hua. Photo thodi saaf khinchein.");
             } finally {
-                btn.innerText = "Scan Again";
-                btn.classList.remove('scan-active');
+                btnTxt.innerText = "Scan Again";
+                loader.classList.add('hidden');
             }
         }
 
-        function generateFinalReport() {
-            const name = document.getElementById('in_name').value;
-            const water = parseFloat(document.getElementById('in_wat').value) || 0;
-            const mus = parseFloat(document.getElementById('in_mus').value) || 0;
-            const med = document.getElementById('in_med').value.toLowerCase();
+        function generateReport() {
+            const nameVal = document.getElementById('name').value;
+            if(!nameVal) return alert("Please enter Client Name");
 
-            if(!name) return alert("Client Name bharein!");
+            const waterVal = parseFloat(document.getElementById('wat').value) || 0;
+            const musVal = parseFloat(document.getElementById('mus').value) || 0;
+            const med = document.getElementById('p_med').value.toLowerCase();
 
-            document.getElementById('out_name').innerText = name;
-            document.getElementById('out_date').innerText = new Date().toLocaleDateString();
+            document.getElementById('out_name').innerText = nameVal;
+            document.getElementById('out_date').innerText = "DATE: " + new Date().toLocaleDateString();
 
             document.getElementById('out_stats').innerHTML = `
-                <div class="flex justify-between border-b py-1 text-blue-900"><span>Weight:</span><span>${document.getElementById('in_w').value} kg</span></div>
-                <div class="flex justify-between border-b py-1"><span>BMI:</span><span>${document.getElementById('in_bmi').value}</span></div>
-                <div class="flex justify-between border-b py-1"><span>Fat %:</span><span>${document.getElementById('in_fat').value}%</span></div>
-                <div class="flex justify-between border-b py-1"><span>Muscle Mass:</span><span>${mus} kg</span></div>
-                <div class="flex justify-between border-b py-1"><span>Visceral Fat:</span><span>${document.getElementById('in_visc').value}</span></div>
-                <div class="flex justify-between border-b py-1"><span>Metabolic Age:</span><span>${document.getElementById('in_age').value} Yrs</span></div>
-                <div class="flex justify-between border-b py-1"><span>Bone Mass:</span><span>${document.getElementById('in_bone').value} kg</span></div>
+                <div class="flex justify-between py-2"><span>Body Weight:</span><span class="text-blue-600">${document.getElementById('w').value} kg</span></div>
+                <div class="flex justify-between py-2"><span>Body Fat:</span><span>${document.getElementById('fat').value}%</span></div>
+                <div class="flex justify-between py-2"><span>Muscle Mass:</span><span>${musVal} kg</span></div>
+                <div class="flex justify-between py-2"><span>Body Water:</span><span class="${waterVal < 50 ? 'text-red-600' : ''}">${waterVal}%</span></div>
+                <div class="flex justify-between py-2"><span>Visceral Fat:</span><span>${document.getElementById('visc').value}</span></div>
+                <div class="flex justify-between py-2"><span>Metabolic Age:</span><span>${document.getElementById('age').value} yrs</span></div>
             `;
 
-            // Logic matching Nandini Mam's profile
-            let aiText = `<p>✅ <b>Muscle Health:</b> Muscle weight is ${mus > 30 ? [span_0](start_span)[span_1](start_span)'perfect for your profile' : 'stable but needs protein support'}.[span_0](end_span)[span_1](end_span)</p>`;
-            
-            if(water < 50) {
-                aiText += `<p>⚠️ <b>Water Level:</b> Currently ${water}% (Low). [span_2](start_span)Ideal level should be >50% for metabolic health.[span_2](end_span)</p>`;
-            }
+            let insights = `<p>🔥 <b>BMR Analysis:</b> Your metabolism needs ${document.getElementById('bmr').value} kcal daily at rest.</p>`;
+            if(waterVal < 50) insights += `<p>💧 <b>Hydration Warning:</b> Water levels are low (${waterVal}%). Increase daily intake.</p>`;
+            if(med.includes("bp") || med.includes("hyper")) insights += `<p>🛑 <b>Medical Notice:</b> Due to Hypertension, focus on steady-state cardio over high intensity.</p>`;
+            insights += `<p>💪 <b>Muscle Mass:</b> Foundation is ${musVal > 40 ? 'excellent' : 'developing'}. Focus on protein intake.</p>`;
 
-            if(med.includes("bp") || med.includes("hyper")) {
-                aiText += `<p>🛑 <b>Medical Precaution:</b> Hypertension detected. [span_3](start_span)Avoid very high-intensity workouts; monitor BP before sessions.[span_3](end_span)</p>`;
-            }
-
-            [span_4](start_span)[span_5](start_span)aiText += `<p>🥗 <b>Recommendation:</b> Increase protein intake to support skeletal muscle maintenance.[span_4](end_span)[span_5](end_span)</p>`;
-
-            document.getElementById('out_ai').innerHTML = aiText;
-            document.getElementById('printReport').classList.remove('hidden');
+            document.getElementById('out_ai').innerHTML = insights;
+            document.getElementById('finalReport').classList.remove('hidden');
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
