@@ -2,159 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness AI Analysis Portal</title>
+    <title>Fitness AI Master Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .input-box { border: 2px solid #e2e8f0; border-radius: 12px; padding: 12px; font-weight: 700; width: 100%; }
-        .input-box:focus { border-color: #2563eb; outline: none; background: #f0f7ff; }
-        .label-text { font-size: 11px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 4px; display: block; }
-        @media print { .no-print { display: none; } .print-area { display: block !important; } }
-    </style>
 </head>
-<body class="bg-slate-100 p-4 md:p-8">
+<body class="bg-slate-100 p-5">
 
-    <div class="max-w-6xl mx-auto no-print bg-white rounded-[2.5rem] shadow-2xl border-t-[12px] border-blue-700 overflow-hidden">
-        <div class="bg-blue-700 p-6 text-center text-white">
-            <h1 class="text-3xl font-black italic uppercase">Tanita AI Scanner <span class="opacity-70 text-xl">V10</span></h1>
+    <div class="max-w-5xl mx-auto bg-white rounded-[3rem] shadow-2xl overflow-hidden border-t-8 border-blue-600">
+        <div class="bg-blue-600 p-6 text-center text-white">
+            <h1 class="text-2xl font-black uppercase italic">Client Report Generator (Auto-Logic)</h1>
         </div>
 
-        <div class="p-8 grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div class="space-y-6">
-                <div class="bg-slate-50 p-6 rounded-3xl border-2 border-dashed border-slate-300 text-center">
-                    <input type="file" accept="image/*" id="fileInput" onchange="preview(event)" class="text-sm font-bold">
-                </div>
-                <div class="bg-black rounded-[2rem] h-[400px] flex items-center justify-center overflow-hidden border-4 border-white shadow-inner">
-                    <img id="imgViewer" class="hidden w-full h-full object-contain">
-                    <p id="placeholderText" class="text-slate-500 font-bold uppercase">Slip Preview Here</p>
-                </div>
-                <button onclick="startAIScan()" id="scanBtn" class="w-full bg-blue-600 text-white py-6 rounded-2xl font-black text-2xl uppercase italic shadow-xl hover:bg-blue-700 transition-all">
-                    Run AI Scan
-                </button>
-            </div>
-
-            <div class="space-y-6 bg-slate-50 p-8 rounded-[2.5rem]">
-                <div>
-                    <label class="label-text">Client Name</label>
-                    <input type="text" id="c_name" class="input-box bg-yellow-50" placeholder="ENTER NAME">
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4 bg-slate-50 p-6 rounded-3xl">
+                <h2 class="font-black text-blue-800 border-b pb-2 uppercase text-sm">Fill Client Details</h2>
+                
+                <input type="text" id="name" placeholder="Client Name" class="w-full p-3 rounded-xl border-2 shadow-sm font-bold">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-slate-500">Actual Age</label>
+                        <input type="number" id="age" class="w-full p-2 border rounded-lg font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-slate-500">Gender</label>
+                        <select id="gender" class="w-full p-2 border rounded-lg font-bold">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="label-text text-blue-600">Weight (KG) [58.5]</label><input type="number" step="0.1" id="c_w" class="input-box"></div>
-                    <div><label class="label-text text-blue-600">BMI Value [18.9]</label><input type="number" step="0.1" id="c_bmi" class="input-box"></div>
-                    <div><label class="label-text">Fat % [18.9]</label><input type="number" step="0.1" id="c_fat" class="input-box"></div>
-                    <div><label class="label-text">Muscle (KG) [44.9]</label><input type="number" step="0.1" id="c_mus" class="input-box"></div>
-                    <div><label class="label-text">Water % [52.0]</label><input type="number" step="0.1" id="c_wat" class="input-box"></div>
-                    <div><label class="label-text">Visceral Fat [4]</label><input type="number" id="c_visc" class="input-box"></div>
-                    <div><label class="label-text">Metabolic Age [24]</label><input type="number" id="c_mage" class="input-box"></div>
-                    <div><label class="label-text">BMR (kcal) [1347]</label><input type="number" id="c_bmr" class="input-box"></div>
+                    <input type="number" step="0.1" id="w" placeholder="Weight (kg)" class="p-2 border rounded-lg font-bold">
+                    <input type="number" step="0.1" id="bmi" placeholder="BMI" class="p-2 border rounded-lg font-bold">
+                    <input type="number" step="0.1" id="fat" placeholder="Fat %" class="p-2 border rounded-lg font-bold">
+                    <input type="number" step="0.1" id="mus" placeholder="Muscle (kg)" class="p-2 border rounded-lg font-bold">
+                    <input type="number" step="0.1" id="wat" placeholder="Water %" class="p-2 border rounded-lg font-bold">
+                    <input type="number" id="vfat" placeholder="Visceral Fat" class="p-2 border rounded-lg font-bold">
+                    <input type="number" id="mage" placeholder="Metabolic Age" class="p-2 border rounded-lg font-bold">
                 </div>
-                
-                <button onclick="generateFinalReport()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-xl uppercase italic shadow-2xl hover:bg-black">Generate Professional Report</button>
+
+                <button onclick="generateReport()" class="w-full bg-blue-700 text-white py-4 rounded-2xl font-black text-xl uppercase shadow-xl hover:scale-105 transition-all">
+                    Generate Auto-Analysis Report
+                </button>
+            </div>
+
+            <div class="flex items-center justify-center border-2 border-dashed border-slate-200 rounded-3xl p-6">
+                <div class="text-center space-y-2">
+                    <p class="font-black text-slate-400 text-xl uppercase">Report Preview Mode</p>
+                    <p class="text-xs text-slate-400 font-bold">System will auto-calculate health status based on values.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="pdfReport" class="hidden bg-white p-12 max-w-4xl mx-auto text-slate-900 print-area" style="min-height: 1100px;">
-        <div class="border-b-4 border-black pb-4 mb-8">
-            <h1 class="text-3xl font-black text-center uppercase tracking-tighter">Comprehensive Health & Fitness Report</h1>
-            <p class="text-center font-bold text-slate-500 mt-2">Client: <span id="r_name" class="text-black underline"></span> | Date: <span id="r_date" class="text-black"></span></p>
+    <div id="pdf-report" class="hidden p-10 bg-white font-sans text-slate-900">
+        <h1 class="text-3xl font-black text-center uppercase border-b-8 border-blue-600 pb-4 mb-6">Fitness & Health Analysis</h1>
+        
+        <div class="mb-8 grid grid-cols-2 font-bold text-lg">
+            <p>NAME: <span id="r-name" class="underline uppercase"></span></p>
+            <p class="text-right">DATE: <span id="r-date"></span></p>
         </div>
 
-        <div class="space-y-10">
-            <section>
-                <h2 class="text-xl font-black border-l-8 border-blue-700 pl-4 mb-6 uppercase italic bg-blue-50 py-1">1. Body Composition Analysis</h2>
-                <div id="r_comp" class="grid grid-cols-1 gap-3 ml-6 font-bold text-sm">
-                    </div>
-            </section>
+        <div id="r-content" class="space-y-6">
+            </div>
 
-            <section>
-                <h2 class="text-xl font-black border-l-8 border-slate-900 pl-4 mb-6 uppercase italic bg-slate-50 py-1">2. Summary & Recommendations</h2>
-                <div id="r_summary" class="space-y-3 ml-6 italic text-slate-700 font-bold">
-                    </div>
-            </section>
+        <div class="mt-10 p-6 bg-slate-100 rounded-2xl">
+            <h3 class="font-black uppercase mb-2">Expert Recommendations:</h3>
+            <ul id="r-tips" class="list-disc ml-5 font-bold text-sm space-y-2"></ul>
         </div>
     </div>
 
     <script>
-        let selectedFile;
-        function preview(e) {
-            selectedFile = e.target.files[0];
-            if (selectedFile) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    document.getElementById('imgViewer').src = ev.target.result;
-                    document.getElementById('imgViewer').classList.remove('hidden');
-                    document.getElementById('placeholderText').classList.add('hidden');
-                };
-                reader.readAsDataURL(selectedFile);
-            }
-        }
+        function generateReport() {
+            const data = {
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                weight: parseFloat(document.getElementById('w').value),
+                bmi: parseFloat(document.getElementById('bmi').value),
+                fat: parseFloat(document.getElementById('fat').value),
+                mus: parseFloat(document.getElementById('mus').value),
+                wat: parseFloat(document.getElementById('wat').value),
+                vfat: parseInt(document.getElementById('vfat').value),
+                mage: parseInt(document.getElementById('mage').value)
+            };
 
-        async function startAIScan() {
-            if (!selectedFile) return alert("Pehle BMI slip upload karein!");
-            const btn = document.getElementById('scanBtn');
-            btn.innerText = "Analyzing Slip Data...";
+            const report = document.getElementById('pdf-report');
+            const content = document.getElementById('r-content');
+            const tips = document.getElementById('r-tips');
             
-            try {
-                const { data: { text } } = await Tesseract.recognize(selectedFile, 'eng');
-                const val = text.match(/\d+\.\d+/g) || [];
-                
-                // FIXED MAPPING: Correcting the "18.9 in Weight" error
-                document.getElementById('c_w').value = val[0] || "";    // Slip Weight: 58.5
-                document.getElementById('c_fat').value = val[1] || "";  // Slip Fat: 18.9
-                document.getElementById('c_mus').value = val[3] || "";  // Slip Muscle: 44.9
-                document.getElementById('c_wat').value = val[5] || "";  // Slip Water: 52.0
-                document.getElementById('c_bmi').value = val[7] || val[1]; // BMI: 18.9
+            report.classList.remove('hidden');
+            document.getElementById('r-name').innerText = data.name;
+            document.getElementById('r-date').innerText = new Date().toLocaleDateString();
 
-                // Fixed keywords
-                const bmrMatch = text.match(/(\d{4})\s*kcal/i);
-                if(bmrMatch) document.getElementById('c_bmr').value = bmrMatch[1];
-                
-                const mageMatch = text.match(/METABOLIC AGE\s*(\d+)/i);
-                if(mageMatch) document.getElementById('c_mage').value = mageMatch[1];
+            // LOGIC FOR AUTO-REPORTS
+            let statusHTML = "";
+            let tipsHTML = "";
 
-                const viscMatch = text.match(/VISCERAL FAT RATING\s*(\d+)/i);
-                if(viscMatch) document.getElementById('c_visc').value = viscMatch[1];
+            // BMI Logic
+            if(data.bmi > 25) {
+                statusHTML += `<div class="flex justify-between border-b p-2"><span>BMI (${data.bmi})</span> <span class="text-red-600 font-black">OVERWEIGHT</span></div>`;
+                tipsHTML += `<li>Reduce calorie intake and increase cardio sessions.</li>`;
+            } else {
+                statusHTML += `<div class="flex justify-between border-b p-2"><span>BMI (${data.bmi})</span> <span class="text-green-600 font-black">HEALTHY</span></div>`;
+            }
 
-                alert("AI ne data bhar diya hai. Blue labels check karke verify karein!");
-            } catch (e) { alert("Scan fail. Lighting check karein."); }
-            btn.innerText = "Run AI Scan Again";
-        }
+            // Water Logic
+            if(data.wat < 55) {
+                statusHTML += `<div class="flex justify-between border-b p-2"><span>Water % (${data.wat}%)</span> <span class="text-orange-500 font-black">LOW (DEHYDRATED)</span></div>`;
+                tipsHTML += `<li>Drink at least 4-5 litres of water daily to improve muscle recovery.</li>`;
+            } else {
+                statusHTML += `<div class="flex justify-between border-b p-2"><span>Water % (${data.wat}%)</span> <span class="text-green-600 font-black">OPTIMAL</span></div>`;
+            }
 
-        function generateFinalReport() {
-            const get = (id) => document.getElementById(id).value;
-            const r_div = document.getElementById('pdfReport');
-            r_div.classList.remove('hidden');
+            // Metabolic Age Logic
+            if(data.mage > data.age) {
+                statusHTML += `<div class="flex justify-between border-b p-2"><span>Metabolic Age (${data.mage})</span> <span class="text-red-600 font-black">OLDER THAN ACTUAL</span></div>`;
+                tipsHTML += `<li>Your metabolism is slow. Focus on high-intensity training (HIIT).</li>`;
+            } else {
+                statusHTML += `<div class="flex justify-between border-b p-2"><span>Metabolic Age (${data.mage})</span> <span class="text-green-600 font-black">EXCELLENT (YOUNG)</span></div>`;
+            }
 
-            document.getElementById('r_name').innerText = get('c_name') || "N/A";
-            document.getElementById('r_date').innerText = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+            content.innerHTML = statusHTML;
+            tips.innerHTML = tipsHTML;
 
-            const bmi = parseFloat(get('c_bmi'));
-            const fat = parseFloat(get('c_fat'));
-
-            document.getElementById('r_comp').innerHTML = `
-                <p>- Weight: ${get('c_w')} kg ${get('c_w') < 60 ? '<span class="text-orange-500">(Lean/Underweight)</span>' : '<span class="text-green-600">(Healthy)</span>'}</p>
-                <p>- BMI: ${get('c_bmi')} ${bmi > 25 ? '<span class="text-red-600">(Overweight)</span>' : '<span class="text-green-600">(Healthy Range)</span>'}</p>
-                <p>- Body Fat %: ${get('c_fat')}% ${fat > 22 ? '<span class="text-red-600">(High)</span>' : '<span class="text-green-600">(Healthy)</span>'}</p>
-                <p>- Muscle Weight: ${get('c_mus')} kg (Solid Foundation)</p>
-                <p>- Water %: ${get('c_wat')}% ${get('c_wat') < 55 ? '<span class="text-orange-500">(Low - Needs Hydration)</span>' : '<span class="text-green-600">(Good)</span>'}</p>
-                <p>- Metabolic Age: ${get('c_mage')} yrs (Excellent Metabolism)</p>
-                <p>- Visceral Fat: ${get('c_visc')} (Low/Healthy)</p>
-            `;
-
-            document.getElementById('r_summary').innerHTML = `
-                <p>• Your metabolism is working perfectly. Your metabolic age is younger than your actual age.</p>
-                <p>• Recommendation: Increase water intake to improve hydration from ${get('c_wat')}% to 60%.</p>
-                <p>• Focus on Lean bulking to reach the ideal weight of 68kg.</p>
-            `;
-
-            const opt = { margin: 0.5, filename: `${get('c_name')}_Health_Report.pdf`, html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
-            html2pdf().set(opt).from(r_div).save().then(() => r_div.classList.add('hidden'));
+            const opt = { margin: 0.5, filename: `${data.name}_Report.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+            html2pdf().set(opt).from(report).save().then(() => report.classList.add('hidden'));
         }
     </script>
 </body>
